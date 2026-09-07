@@ -5,27 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Іван Колодєєв — Вайбкодер</title>
 <meta name="description" content="Портфоліо Івана Колодєєва — вайбкодера. Проєкти: SlotOK, AURORA, Maison, ЛИПА та інші.">
-<meta name="theme-color" content="#14161a">
+<meta name="theme-color" content="#0d0f13">
 <meta property="og:title" content="Іван Колодєєв — Вайбкодер">
 <meta property="og:description" content="Портфоліо проєктів: SlotOK, AURORA, Maison, ЛИПА та інші.">
 <meta property="og:type" content="website">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2314161a'/><path d='M8 10 L14 16 L8 22' stroke='%23e8a33d' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/><rect x='17' y='19' width='8' height='3' rx='1' fill='%23e8a33d'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230d0f13'/><path d='M8 10 L14 16 L8 22' stroke='%23e8a33d' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/><rect x='17' y='19' width='8' height='3' rx='1' fill='%23e8a33d'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <style>
   :root {
-    --bg: #14161a;
-    --bg-raised: #1b1e24;
-    --line: #2a2e35;
-    --text: #f0ede4;
-    --text-dim: #8a8d93;
+    --bg: #0d0f13;
+    --bg-raised: #15171d;
+    --bg-card: #181b22;
+    --line: #262a33;
+    --line-soft: #1e2128;
+    --text: #f3f1ea;
+    --text-dim: #8d9099;
+    --text-dimmer: #5e6169;
     --accent: #e8a33d;
+    --accent-soft: #f0b862;
     --accent-dim: #6b4e22;
+    --accent-wash: rgba(232, 163, 61, 0.08);
+    --teal: #5fb8ac;
+    --radius: 14px;
+    --maxw: 720px;
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
     margin: 0;
     background: var(--bg);
@@ -33,27 +42,120 @@
     font-family: 'Golos Text', sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
-  body::before {
-    content: '';
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  /* ambient background */
+  .bg-grid {
     position: fixed;
     inset: 0;
-    background-image: radial-gradient(var(--line) 1px, transparent 1px);
+    background-image: radial-gradient(var(--line-soft) 1px, transparent 1px);
     background-size: 28px 28px;
-    opacity: 0.35;
+    opacity: 0.5;
     pointer-events: none;
+    z-index: 0;
   }
+  .bg-glow {
+    position: fixed;
+    top: -280px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 560px;
+    background: radial-gradient(closest-side, rgba(232, 163, 61, 0.16), transparent 70%);
+    filter: blur(10px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-glow-2 {
+    position: fixed;
+    bottom: -320px;
+    right: -200px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(closest-side, rgba(95, 184, 172, 0.10), transparent 70%);
+    filter: blur(10px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* nav */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 24px;
+    background: rgba(13, 15, 19, 0.72);
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .nav-inner {
+    width: 100%;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .nav-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-wash);
+  }
+  .nav-links { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13.5px;
+    transition: color .15s ease;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible { color: var(--text); }
+  .nav-cta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--bg);
+    background: var(--accent);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity .15s ease, transform .15s ease;
+  }
+  .nav-cta:hover, .nav-cta:focus-visible { opacity: .88; transform: translateY(-1px); }
+  @media (max-width: 620px) { .nav-links { display: none; } }
+
   .wrap {
     position: relative;
-    max-width: 640px;
+    z-index: 1;
+    max-width: var(--maxw);
     margin: 0 auto;
-    padding: 64px 24px 48px;
+    padding: 72px 24px 48px;
   }
   .prompt {
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
     color: var(--text-dim);
-    margin: 0 0 20px;
+    margin: 0 0 18px;
   }
   .cursor {
     display: inline-block;
@@ -72,137 +174,159 @@
   .hero-anim { opacity: 0; animation: fade-up-in .6s ease forwards; }
   .reveal { opacity: 0; }
   .reveal.is-visible { animation: fade-up-in .6s ease forwards; }
+
   h1 {
     font-family: 'Golos Text', sans-serif;
-    font-weight: 700;
-    font-size: 40px;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-    margin: 0 0 14px;
+    font-weight: 800;
+    font-size: 46px;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+    background: linear-gradient(180deg, var(--text) 0%, var(--text) 55%, var(--text-dim) 130%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   .role-tag {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
     color: var(--accent);
     border: 1px solid var(--accent-dim);
-    background: rgba(232, 163, 61, 0.08);
-    padding: 5px 10px;
-    border-radius: 3px;
-    margin-bottom: 56px;
+    background: var(--accent-wash);
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-bottom: 28px;
   }
-  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 56px; }
+  .role-tag::before { content: '●'; font-size: 8px; color: var(--teal); }
+
+  .stat-row {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--text);
+  }
+  .stat-label { font-size: 12.5px; color: var(--text-dim); }
+
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 64px; }
   .btn {
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
     color: var(--text);
     text-decoration: none;
     border: 1px solid var(--line);
-    padding: 10px 16px;
-    border-radius: 3px;
-    transition: border-color .15s ease, color .15s ease;
+    padding: 11px 18px;
+    border-radius: 9px;
+    transition: border-color .15s ease, color .15s ease, background .15s ease, transform .15s ease;
   }
-  .btn:hover, .btn:focus-visible { border-color: var(--accent); color: var(--accent); }
+  .btn:hover, .btn:focus-visible { border-color: var(--accent-dim); color: var(--accent); background: var(--accent-wash); transform: translateY(-1px); }
   .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn-primary {
+    color: var(--bg);
+    background: var(--accent);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .btn-primary:hover, .btn-primary:focus-visible { color: var(--bg); background: var(--accent-soft); border-color: var(--accent-soft); }
+
+  .section { scroll-margin-top: 84px; }
   .section-eyebrow {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-    color: var(--text-dim);
-    margin: 0 0 6px;
+    color: var(--text-dimmer);
+    margin: 0 0 8px;
   }
   h2 {
     font-family: 'Golos Text', sans-serif;
-    font-weight: 600;
-    font-size: 22px;
-    margin: 0 0 24px;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    margin: 0 0 26px;
   }
-  .projects { display: flex; flex-direction: column; gap: 12px; margin-bottom: 56px; }
-  .project {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    background: var(--bg-raised);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 18px 20px;
-    overflow: hidden;
-    transition: border-color .15s ease, transform .15s ease;
-  }
-  .project:hover, .project:focus-visible { border-color: var(--accent-dim); transform: translateY(-1px); }
-  .project:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .project-top { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; }
-  .status-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: #6fbf73;
-    box-shadow: 0 0 0 3px rgba(111, 191, 115, 0.15);
-    flex-shrink: 0;
-  }
-  .project-name { font-weight: 600; font-size: 16px; flex: 1; }
-  .project-arrow { font-family: 'JetBrains Mono', monospace; color: var(--text-dim); }
-  .project-domain {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--accent);
-    margin: 0 0 8px;
-    word-break: break-all;
-  }
-  .project-desc { font-size: 14px; color: var(--text-dim); margin: 0; line-height: 1.55; }
-  .project-preview {
-    margin: -18px -20px 14px;
-    height: 108px;
-    background: #20242b;
-    border-bottom: 1px solid var(--line);
-    border-radius: 6px 6px 0 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .about-text { font-size: 15px; color: var(--text-dim); line-height: 1.65; margin: 0 0 56px; }
-  .tech-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 56px; }
+
+  .about-text { font-size: 15.5px; color: var(--text-dim); line-height: 1.7; margin: 0 0 64px; max-width: 58ch; }
+
+  .tech-row { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 64px; }
   .tech-badge {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 12.5px;
     color: var(--text-dim);
     border: 1px solid var(--line);
-    padding: 6px 12px;
-    border-radius: 3px;
+    background: var(--bg-raised);
+    padding: 7px 13px;
+    border-radius: 8px;
+    transition: border-color .15s ease, color .15s ease;
   }
-  .mid-cta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 56px; }
-  .mid-cta-text { font-size: 14px; color: var(--text-dim); }
-  .pricing-list { border-top: 1px solid var(--line); margin-bottom: 56px; }
-  .pricing-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 16px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--line);
+  .tech-badge:hover { border-color: var(--accent-dim); color: var(--accent); }
+
+  /* pricing cards */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 64px;
   }
-  .pricing-info { flex: 1; min-width: 0; }
-  .pricing-name { font-weight: 600; font-size: 15px; margin: 0 0 4px; }
-  .pricing-desc { font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.5; }
-  .pricing-price { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; }
+  @media (max-width: 560px) { .pricing-grid { grid-template-columns: 1fr; } }
+  .pricing-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .pricing-card:hover { border-color: var(--accent-dim); transform: translateY(-2px); }
+  .pricing-card.is-popular { border-color: var(--accent-dim); background: linear-gradient(160deg, var(--accent-wash), var(--bg-card) 55%); }
+  .pricing-badge {
+    position: absolute;
+    top: -11px;
+    right: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 4px 9px;
+    border-radius: 20px;
+  }
+  .pricing-name { font-weight: 600; font-size: 15.5px; margin: 0 0 8px; }
+  .pricing-desc { font-size: 13px; color: var(--text-dim); margin: 0 0 20px; line-height: 1.55; min-height: 40px; }
+  .pricing-price { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
   .price-uah {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 15px;
+    font-size: 17px;
+    font-weight: 600;
     color: var(--accent);
     white-space: nowrap;
   }
   .price-usd {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text-dim);
+    font-size: 12.5px;
+    color: var(--text-dimmer);
     white-space: nowrap;
-    margin-top: 2px;
   }
-  .process-list { margin-bottom: 56px; }
-  .process-step { position: relative; padding-left: 44px; padding-bottom: 26px; }
+
+  /* process */
+  .process-list { margin-bottom: 64px; }
+  .process-step { position: relative; padding-left: 46px; padding-bottom: 28px; }
   .process-step:last-child { padding-bottom: 0; }
   .process-step::before {
     content: '';
     position: absolute;
     left: 13px;
-    top: 30px;
+    top: 32px;
     bottom: 0;
     width: 1px;
     background: var(--line);
@@ -216,22 +340,98 @@
     height: 28px;
     border-radius: 50%;
     border: 1px solid var(--accent-dim);
-    background: rgba(232, 163, 61, 0.08);
+    background: var(--accent-wash);
     color: var(--accent);
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
+    font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .process-title { font-weight: 600; font-size: 15px; margin: 0 0 4px; }
-  .process-desc { font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.5; }
-  .faq-list { border-top: 1px solid var(--line); margin-bottom: 56px; }
-  .faq-item { border-bottom: 1px solid var(--line); }
+  .process-title { font-weight: 600; font-size: 15.5px; margin: 0 0 4px; }
+  .process-desc { font-size: 13.5px; color: var(--text-dim); margin: 0; line-height: 1.55; max-width: 50ch; }
+
+  .mid-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 64px;
+    padding: 18px 22px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+  }
+  .mid-cta-text { font-size: 14.5px; color: var(--text-dim); }
+
+  /* projects */
+  .projects { display: flex; flex-direction: column; gap: 14px; margin-bottom: 64px; }
+  .project {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    overflow: hidden;
+    transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+  }
+  .project:hover, .project:focus-visible {
+    border-color: var(--accent-dim);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px -18px rgba(0, 0, 0, 0.6);
+  }
+  .project:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .project-top { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #6fbf73;
+    box-shadow: 0 0 0 3px rgba(111, 191, 115, 0.15);
+    flex-shrink: 0;
+  }
+  .project-name { font-weight: 600; font-size: 16.5px; flex: 1; }
+  .project-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dimmer);
+    transition: transform .18s ease, color .18s ease;
+  }
+  .project:hover .project-arrow, .project:focus-visible .project-arrow { transform: translate(2px, -2px); color: var(--accent); }
+  .project-domain {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    margin: 0 0 9px;
+    word-break: break-all;
+  }
+  .project-desc { font-size: 14px; color: var(--text-dim); margin: 0; line-height: 1.55; }
+  .project-preview {
+    margin: -20px -22px 16px;
+    height: 118px;
+    background:
+      radial-gradient(120% 140% at 15% 15%, var(--accent-wash), transparent 60%),
+      var(--bg-raised);
+    border-bottom: 1px solid var(--line-soft);
+    border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* faq */
+  .faq-list { margin-bottom: 64px; display: flex; flex-direction: column; gap: 10px; }
+  .faq-item {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0 18px;
+  }
   .faq-item summary {
     cursor: pointer;
     list-style: none;
-    padding: 16px 30px 16px 0;
+    padding: 17px 30px 17px 0;
     font-weight: 600;
     font-size: 15px;
     position: relative;
@@ -240,15 +440,16 @@
   .faq-item summary::after {
     content: '+';
     position: absolute;
-    right: 4px;
-    top: 12px;
+    right: 0;
+    top: 13px;
     color: var(--accent);
     font-family: 'JetBrains Mono', monospace;
     font-size: 20px;
     transition: transform .2s ease;
   }
   .faq-item[open] summary::after { transform: rotate(45deg); }
-  .faq-item p { font-size: 14px; color: var(--text-dim); line-height: 1.55; margin: 0 0 18px; }
+  .faq-item p { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin: 0 0 18px; }
+
   .fab {
     position: fixed;
     bottom: 22px;
@@ -261,49 +462,55 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 24px -6px rgba(232, 163, 61, 0.5);
     z-index: 10;
-    transition: transform .15s ease;
+    transition: transform .15s ease, box-shadow .15s ease;
   }
-  .fab:hover, .fab:focus-visible { transform: scale(1.08); }
+  .fab:hover, .fab:focus-visible { transform: scale(1.08); box-shadow: 0 10px 30px -4px rgba(232, 163, 61, 0.6); }
   .fab:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+
   .contact-panel {
+    position: relative;
     text-align: center;
     border: 1px solid var(--accent-dim);
-    background: rgba(232, 163, 61, 0.06);
-    border-radius: 8px;
-    padding: 32px 24px;
+    background: radial-gradient(120% 160% at 50% 0%, var(--accent-wash), var(--bg-card) 65%);
+    border-radius: 18px;
+    padding: 40px 28px;
     margin-bottom: 56px;
+    overflow: hidden;
   }
   .contact-panel h2 { margin-bottom: 8px; }
-  .contact-panel p { color: var(--text-dim); font-size: 14px; margin: 0 0 22px; }
+  .contact-panel p { color: var(--text-dim); font-size: 14px; margin: 0 0 24px; }
   .contact-cta {
     display: inline-block;
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--bg);
     background: var(--accent);
     text-decoration: none;
-    padding: 12px 22px;
-    border-radius: 3px;
-    transition: opacity .15s ease;
+    padding: 13px 24px;
+    border-radius: 10px;
+    transition: opacity .15s ease, transform .15s ease;
   }
-  .contact-cta:hover, .contact-cta:focus-visible { opacity: .85; }
+  .contact-cta:hover, .contact-cta:focus-visible { opacity: .88; transform: translateY(-1px); }
   .contact-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .contact-phone {
     display: block;
-    margin-top: 16px;
+    margin-top: 18px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
     color: var(--text-dim);
     text-decoration: none;
   }
-  .contact-note { font-size: 12px; color: var(--text-dim); margin: 14px 0 0; }
+  .contact-note { font-size: 12px; color: var(--text-dimmer); margin: 16px 0 0; }
   .contact-phone:hover, .contact-phone:focus-visible { color: var(--accent); }
+
   footer {
-    border-top: 1px solid var(--line);
-    padding-top: 24px;
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--line-soft);
+    padding: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -311,257 +518,306 @@
     gap: 12px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-    color: var(--text-dim);
+    color: var(--text-dimmer);
   }
-  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a { color: var(--text-dimmer); text-decoration: none; }
   footer a:hover, footer a:focus-visible { color: var(--accent); }
+
   @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
     .cursor { animation: none; }
-    .project { transition: none; }
+    .project, .pricing-card, .btn, .fab, .contact-cta { transition: none; }
     .hero-anim, .reveal, .reveal.is-visible { opacity: 1; animation: none; }
   }
   @media (max-width: 480px) {
-    h1 { font-size: 32px; }
-    .wrap { padding: 40px 20px 32px; }
+    h1 { font-size: 34px; }
+    .wrap { padding: 44px 20px 32px; }
+    .stat-row { gap: 20px; }
+    .mid-cta { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-glow" aria-hidden="true"></div>
+<div class="bg-glow-2" aria-hidden="true"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#top">
+      <span class="nav-dot" aria-hidden="true"></span>
+      ivan.dev
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">Про мене</a></li>
+      <li><a href="#pricing">Ціни</a></li>
+      <li><a href="#projects">Проєкти</a></li>
+      <li><a href="#faq">Питання</a></li>
+    </ul>
+    <a class="nav-cta" href="https://t.me/Theivankoo" target="_blank" rel="noopener">Написати ↗</a>
+  </div>
+</nav>
+
+<div class="wrap" id="top">
   <p class="prompt hero-anim" style="animation-delay:0s">ivan@portfolio:~$ whoami<span class="cursor" aria-hidden="true"></span></p>
 
   <h1 class="hero-anim" style="animation-delay:.15s">Іван Колодєєв</h1>
   <span class="role-tag hero-anim" style="animation-delay:.3s">вайбкодер</span>
 
-  <p class="section-eyebrow">$ cat ./about.md</p>
-  <h2>Про мене</h2>
-  <p class="about-text reveal">Роблю сайти під замовлення — без агентської бюрократії і зайвих зустрічей. Вайбкодер: пишу код у парі з AI, тому результат готовий за дні, а не тижні, і це не заважає якості. Кожен проєкт — свій стиль під клієнта, без шаблонів.</p>
-
-  <p class="section-eyebrow">$ cat ./stack.json</p>
-  <h2>Технології</h2>
-  <div class="tech-row reveal">
-    <span class="tech-badge">HTML</span>
-    <span class="tech-badge">CSS</span>
-    <span class="tech-badge">JavaScript</span>
-    <span class="tech-badge">Vercel</span>
-    <span class="tech-badge">Бази даних</span>
+  <div class="stat-row hero-anim" style="animation-delay:.4s">
+    <div class="stat">
+      <span class="stat-num">5+</span>
+      <span class="stat-label">завершених проєктів</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">3–5</span>
+      <span class="stat-label">днів на лендінг</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">100%</span>
+      <span class="stat-label">унікальний дизайн</span>
+    </div>
   </div>
 
-  <p class="section-eyebrow">$ cat ./pricing.json</p>
-  <h2>Послуги та ціни</h2>
-  <div class="pricing-list">
-    <div class="pricing-row reveal">
-      <div class="pricing-info">
+  <div class="cta-row hero-anim" style="animation-delay:.5s">
+    <a class="btn btn-primary" href="https://t.me/Theivankoo" target="_blank" rel="noopener">Замовити сайт ↗</a>
+    <a class="btn" href="#projects">Дивитись проєкти</a>
+  </div>
+
+  <div class="section" id="about">
+    <p class="section-eyebrow">$ cat ./about.md</p>
+    <h2>Про мене</h2>
+    <p class="about-text reveal">Роблю сайти під замовлення — без агентської бюрократії і зайвих зустрічей. Вайбкодер: пишу код у парі з AI, тому результат готовий за дні, а не тижні, і це не заважає якості. Кожен проєкт — свій стиль під клієнта, без шаблонів.</p>
+  </div>
+
+  <div class="section">
+    <p class="section-eyebrow">$ cat ./stack.json</p>
+    <h2>Технології</h2>
+    <div class="tech-row reveal">
+      <span class="tech-badge">HTML</span>
+      <span class="tech-badge">CSS</span>
+      <span class="tech-badge">JavaScript</span>
+      <span class="tech-badge">Vercel</span>
+      <span class="tech-badge">Бази даних</span>
+    </div>
+  </div>
+
+  <div class="section" id="pricing">
+    <p class="section-eyebrow">$ cat ./pricing.json</p>
+    <h2>Послуги та ціни</h2>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
         <p class="pricing-name">Лендінг / сайт-візитка</p>
         <p class="pricing-desc">Односторінковий сайт під ключ — дизайн, адаптивність, форма зв'язку.</p>
+        <div class="pricing-price">
+          <span class="price-uah">від 7 000 грн</span>
+          <span class="price-usd">$155</span>
+        </div>
       </div>
-      <div class="pricing-price">
-        <span class="price-uah">від 7 000 грн</span>
-        <span class="price-usd">$155</span>
-      </div>
-    </div>
-    <div class="pricing-row reveal">
-      <div class="pricing-info">
+      <div class="pricing-card is-popular reveal">
+        <span class="pricing-badge">Популярне</span>
         <p class="pricing-name">Багатосторінковий сайт</p>
         <p class="pricing-desc">Кілька сторінок, навігація, унікальний дизайн під бренд.</p>
+        <div class="pricing-price">
+          <span class="price-uah">від 15 000 грн</span>
+          <span class="price-usd">$335</span>
+        </div>
       </div>
-      <div class="pricing-price">
-        <span class="price-uah">від 15 000 грн</span>
-        <span class="price-usd">$335</span>
-      </div>
-    </div>
-    <div class="pricing-row reveal">
-      <div class="pricing-info">
+      <div class="pricing-card reveal">
         <p class="pricing-name">Інтернет-магазин</p>
         <p class="pricing-desc">Каталог, кошик, картки товарів, адаптивна верстка.</p>
+        <div class="pricing-price">
+          <span class="price-uah">від 22 000 грн</span>
+          <span class="price-usd">$490</span>
+        </div>
       </div>
-      <div class="pricing-price">
-        <span class="price-uah">від 22 000 грн</span>
-        <span class="price-usd">$490</span>
-      </div>
-    </div>
-    <div class="pricing-row reveal">
-      <div class="pricing-info">
+      <div class="pricing-card reveal">
         <p class="pricing-name">Сайт з базою даних</p>
         <p class="pricing-desc">Форми, що зберігають дані, бронювання, особистий кабінет.</p>
-      </div>
-      <div class="pricing-price">
-        <span class="price-uah">від 30 000 грн</span>
-        <span class="price-usd">$670</span>
+        <div class="pricing-price">
+          <span class="price-uah">від 30 000 грн</span>
+          <span class="price-usd">$670</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <p class="section-eyebrow">$ cat ./process.md</p>
-  <h2>Як проходить робота</h2>
-  <div class="process-list reveal">
-    <div class="process-step">
-      <span class="process-num">1</span>
-      <p class="process-title">Заявка</p>
-      <p class="process-desc">Пишеш у Telegram, описуєш задачу.</p>
-    </div>
-    <div class="process-step">
-      <span class="process-num">2</span>
-      <p class="process-title">Обговорення і ціна</p>
-      <p class="process-desc">Узгоджуємо обсяг робіт, терміни й фінальну вартість.</p>
-    </div>
-    <div class="process-step">
-      <span class="process-num">3</span>
-      <p class="process-title">Передоплата</p>
-      <p class="process-desc">30–50% на старт, решта — після здачі.</p>
-    </div>
-    <div class="process-step">
-      <span class="process-num">4</span>
-      <p class="process-title">Розробка</p>
-      <p class="process-desc">Показую проміжні результати, вносимо правки разом.</p>
-    </div>
-    <div class="process-step">
-      <span class="process-num">5</span>
-      <p class="process-title">Здача</p>
-      <p class="process-desc">Фінальна оплата, передаю файли й доступи.</p>
+  <div class="section">
+    <p class="section-eyebrow">$ cat ./process.md</p>
+    <h2>Як проходить робота</h2>
+    <div class="process-list reveal">
+      <div class="process-step">
+        <span class="process-num">1</span>
+        <p class="process-title">Заявка</p>
+        <p class="process-desc">Пишеш у Telegram, описуєш задачу.</p>
+      </div>
+      <div class="process-step">
+        <span class="process-num">2</span>
+        <p class="process-title">Обговорення і ціна</p>
+        <p class="process-desc">Узгоджуємо обсяг робіт, терміни й фінальну вартість.</p>
+      </div>
+      <div class="process-step">
+        <span class="process-num">3</span>
+        <p class="process-title">Передоплата</p>
+        <p class="process-desc">30–50% на старт, решта — після здачі.</p>
+      </div>
+      <div class="process-step">
+        <span class="process-num">4</span>
+        <p class="process-title">Розробка</p>
+        <p class="process-desc">Показую проміжні результати, вносимо правки разом.</p>
+      </div>
+      <div class="process-step">
+        <span class="process-num">5</span>
+        <p class="process-title">Здача</p>
+        <p class="process-desc">Фінальна оплата, передаю файли й доступи.</p>
+      </div>
     </div>
   </div>
 
   <div class="mid-cta reveal">
     <span class="mid-cta-text">Сподобались ціни?</span>
-    <a class="btn" href="https://t.me/Theivankoo" target="_blank" rel="noopener">Написати в Telegram ↗</a>
+    <a class="btn btn-primary" href="https://t.me/Theivankoo" target="_blank" rel="noopener">Написати в Telegram ↗</a>
   </div>
 
-  <p class="section-eyebrow">$ ls ./projects --status=live</p>
-  <h2>Проєкти</h2>
+  <div class="section" id="projects">
+    <p class="section-eyebrow">$ ls ./projects --status=live</p>
+    <h2>Проєкти</h2>
 
-  <div class="projects">
-    <a class="project reveal" href="https://slot-ok-beta.vercel.app/" target="_blank" rel="noopener">
-      <div class="project-preview" aria-hidden="true">
-        <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="8" y="14" width="48" height="38" rx="6"/>
-          <circle cx="22" cy="33" r="6"/>
-          <circle cx="32" cy="33" r="6"/>
-          <circle cx="42" cy="33" r="6"/>
-          <path d="M14 14 L14 8 M50 14 L50 8"/>
-        </svg>
-      </div>
-      <div class="project-top">
-        <span class="status-dot" aria-hidden="true"></span>
-        <span class="project-name">SlotOK</span>
-        <span class="project-arrow" aria-hidden="true">↗</span>
-      </div>
-      <p class="project-domain">slot-ok-beta.vercel.app</p>
-      <p class="project-desc">Соціальне демо-казино на віртуальній валюті — 30+ міні-ігор, банк, чат, VIP-система.</p>
-    </a>
-
-    <a class="project reveal" href="https://ivan-site-nine.vercel.app/" target="_blank" rel="noopener">
-      <div class="project-preview" aria-hidden="true">
-        <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="8" y="10" width="48" height="44" rx="4"/>
-          <line x1="8" y1="22" x2="56" y2="22"/>
-          <circle cx="14" cy="16" r="1.6" fill="var(--accent)" stroke="none"/>
-          <circle cx="19" cy="16" r="1.6" fill="var(--accent)" stroke="none"/>
-          <path d="M32 30 L32 46 M24 38 L40 38"/>
-        </svg>
-      </div>
-      <div class="project-top">
-        <span class="status-dot" aria-hidden="true"></span>
-        <span class="project-name">Створення замовлення</span>
-        <span class="project-arrow" aria-hidden="true">↗</span>
-      </div>
-      <p class="project-domain">ivan-site-nine.vercel.app</p>
-      <p class="project-desc">Лендінг для замовлення сайтів під ключ — портфоліо робіт і форма зв'язку.</p>
-    </a>
-
-    <a class="project reveal" href="https://aurora-nine-beige.vercel.app/" target="_blank" rel="noopener">
-      <div class="project-preview" aria-hidden="true">
-        <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="32" cy="32" r="7"/>
-          <ellipse cx="32" cy="32" rx="26" ry="11" transform="rotate(-20 32 32)"/>
-          <circle cx="56" cy="23" r="2.4" fill="var(--accent)" stroke="none"/>
-        </svg>
-      </div>
-      <div class="project-top">
-        <span class="status-dot" aria-hidden="true"></span>
-        <span class="project-name">AURORA</span>
-        <span class="project-arrow" aria-hidden="true">↗</span>
-      </div>
-      <p class="project-domain">aurora-nine-beige.vercel.app</p>
-      <p class="project-desc">Багатосторінковий концепт-сайт приватних космічних подорожей — 5 сторінок, від напрямків до бронювання.</p>
-    </a>
-
-    <a class="project reveal" href="https://shop-xi-one-17.vercel.app/" target="_blank" rel="noopener">
-      <div class="project-preview" aria-hidden="true">
-        <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="32" cy="15" r="4"/>
-          <path d="M32 19 L32 23"/>
-          <path d="M32 23 L13 40 L51 40 Z"/>
-        </svg>
-      </div>
-      <div class="project-top">
-        <span class="status-dot" aria-hidden="true"></span>
-        <span class="project-name">Maison</span>
-        <span class="project-arrow" aria-hidden="true">↗</span>
-      </div>
-      <p class="project-domain">shop-xi-one-17.vercel.app</p>
-      <p class="project-desc">Інтернет-магазин одягу — категорії, кошик, сторінки товарів і розпродаж.</p>
-    </a>
-
-    <a class="project reveal" href="https://lupa-coffe.vercel.app/" target="_blank" rel="noopener">
-      <div class="project-preview" aria-hidden="true">
-        <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M16 26h28v14a10 10 0 0 1-10 10H26a10 10 0 0 1-10-10V26Z"/>
-          <path d="M44 30h4a6 6 0 0 1 0 12h-4"/>
-          <path d="M23 18c-1 3 2 3 1 6M31 18c-1 3 2 3 1 6"/>
-        </svg>
-      </div>
-      <div class="project-top">
-        <span class="status-dot" aria-hidden="true"></span>
-        <span class="project-name">ЛИПА</span>
-        <span class="project-arrow" aria-hidden="true">↗</span>
-      </div>
-      <p class="project-domain">lupa-coffe.vercel.app</p>
-      <p class="project-desc">Кав'ярня «Липа» в центрі Києва — меню, галерея, відгуки та онлайн-бронювання столика.</p>
-    </a>
-
-    <!--
-      ДОДАТИ НОВИЙ ПРОЄКТ
-      Скопіюй блок нижче ПЕРЕД цим коментарем і заповни href, назву, домен, опис.
-      Блок .project-preview необов'язковий — можна лишити свою SVG-іконку
-      (скопіюй з картки вище і зміни форми) або просто видалити весь div.
-
-      <a class="project reveal" href="https://посилання" target="_blank" rel="noopener">
+    <div class="projects">
+      <a class="project reveal" href="https://slot-ok-beta.vercel.app/" target="_blank" rel="noopener">
         <div class="project-preview" aria-hidden="true">
           <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="8" y="10" width="48" height="44" rx="6"/>
+            <rect x="8" y="14" width="48" height="38" rx="6"/>
+            <circle cx="22" cy="33" r="6"/>
+            <circle cx="32" cy="33" r="6"/>
+            <circle cx="42" cy="33" r="6"/>
+            <path d="M14 14 L14 8 M50 14 L50 8"/>
           </svg>
         </div>
         <div class="project-top">
           <span class="status-dot" aria-hidden="true"></span>
-          <span class="project-name">Назва проєкту</span>
+          <span class="project-name">SlotOK</span>
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
-        <p class="project-domain">домен.vercel.app</p>
-        <p class="project-desc">Короткий опис в одне речення.</p>
+        <p class="project-domain">slot-ok-beta.vercel.app</p>
+        <p class="project-desc">Соціальне демо-казино на віртуальній валюті — 30+ міні-ігор, банк, чат, VIP-система.</p>
       </a>
-    -->
+
+      <a class="project reveal" href="https://ivan-site-nine.vercel.app/" target="_blank" rel="noopener">
+        <div class="project-preview" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="8" y="10" width="48" height="44" rx="4"/>
+            <line x1="8" y1="22" x2="56" y2="22"/>
+            <circle cx="14" cy="16" r="1.6" fill="var(--accent)" stroke="none"/>
+            <circle cx="19" cy="16" r="1.6" fill="var(--accent)" stroke="none"/>
+            <path d="M32 30 L32 46 M24 38 L40 38"/>
+          </svg>
+        </div>
+        <div class="project-top">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="project-name">Створення замовлення</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+        <p class="project-domain">ivan-site-nine.vercel.app</p>
+        <p class="project-desc">Лендінг для замовлення сайтів під ключ — портфоліо робіт і форма зв'язку.</p>
+      </a>
+
+      <a class="project reveal" href="https://aurora-nine-beige.vercel.app/" target="_blank" rel="noopener">
+        <div class="project-preview" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="32" cy="32" r="7"/>
+            <ellipse cx="32" cy="32" rx="26" ry="11" transform="rotate(-20 32 32)"/>
+            <circle cx="56" cy="23" r="2.4" fill="var(--accent)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="project-top">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="project-name">AURORA</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+        <p class="project-domain">aurora-nine-beige.vercel.app</p>
+        <p class="project-desc">Багатосторінковий концепт-сайт приватних космічних подорожей — 5 сторінок, від напрямків до бронювання.</p>
+      </a>
+
+      <a class="project reveal" href="https://shop-xi-one-17.vercel.app/" target="_blank" rel="noopener">
+        <div class="project-preview" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="32" cy="15" r="4"/>
+            <path d="M32 19 L32 23"/>
+            <path d="M32 23 L13 40 L51 40 Z"/>
+          </svg>
+        </div>
+        <div class="project-top">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="project-name">Maison</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+        <p class="project-domain">shop-xi-one-17.vercel.app</p>
+        <p class="project-desc">Інтернет-магазин одягу — категорії, кошик, сторінки товарів і розпродаж.</p>
+      </a>
+
+      <a class="project reveal" href="https://lupa-coffe.vercel.app/" target="_blank" rel="noopener">
+        <div class="project-preview" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 26h28v14a10 10 0 0 1-10 10H26a10 10 0 0 1-10-10V26Z"/>
+            <path d="M44 30h4a6 6 0 0 1 0 12h-4"/>
+            <path d="M23 18c-1 3 2 3 1 6M31 18c-1 3 2 3 1 6"/>
+          </svg>
+        </div>
+        <div class="project-top">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="project-name">ЛИПА</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+        <p class="project-domain">lupa-coffe.vercel.app</p>
+        <p class="project-desc">Кав'ярня «Липа» в центрі Києва — меню, галерея, відгуки та онлайн-бронювання столика.</p>
+      </a>
+
+      <!--
+        ДОДАТИ НОВИЙ ПРОЄКТ
+        Скопіюй блок нижче ПЕРЕД цим коментарем і заповни href, назву, домен, опис.
+        Блок .project-preview необов'язковий — можна лишити свою SVG-іконку
+        (скопіюй з картки вище і зміни форми) або просто видалити весь div.
+
+        <a class="project reveal" href="https://посилання" target="_blank" rel="noopener">
+          <div class="project-preview" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="52" height="52" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="8" y="10" width="48" height="44" rx="6"/>
+            </svg>
+          </div>
+          <div class="project-top">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="project-name">Назва проєкту</span>
+            <span class="project-arrow" aria-hidden="true">↗</span>
+          </div>
+          <p class="project-domain">домен.vercel.app</p>
+          <p class="project-desc">Короткий опис в одне речення.</p>
+        </a>
+      -->
+    </div>
   </div>
 
-  <p class="section-eyebrow">$ cat ./faq.md</p>
-  <h2>Питання</h2>
-  <div class="faq-list reveal">
-    <details class="faq-item">
-      <summary>Скільки часу займає розробка?</summary>
-      <p>Лендінг — 3–5 днів. Багатосторінковий сайт чи магазин — 1–2 тижні, залежно від обсягу.</p>
-    </details>
-    <details class="faq-item">
-      <summary>Як відбувається оплата?</summary>
-      <p>30–50% перед початком роботи, решта — після здачі готового сайту.</p>
-    </details>
-    <details class="faq-item">
-      <summary>Чи можна вносити правки в процесі?</summary>
-      <p>Так, узгоджуємо правки на етапі розробки без доплат. Зміни після здачі — окремою домовленістю.</p>
-    </details>
-    <details class="faq-item">
-      <summary>Чи зможу я сам редагувати сайт після здачі?</summary>
-      <p>Так. Віддаю чистий код без прив'язки до конструкторів — можеш редагувати сам або звернутись знову.</p>
-    </details>
+  <div class="section" id="faq">
+    <p class="section-eyebrow">$ cat ./faq.md</p>
+    <h2>Питання</h2>
+    <div class="faq-list reveal">
+      <details class="faq-item">
+        <summary>Скільки часу займає розробка?</summary>
+        <p>Лендінг — 3–5 днів. Багатосторінковий сайт чи магазин — 1–2 тижні, залежно від обсягу.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Як відбувається оплата?</summary>
+        <p>30–50% перед початком роботи, решта — після здачі готового сайту.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Чи можна вносити правки в процесі?</summary>
+        <p>Так, узгоджуємо правки на етапі розробки без доплат. Зміни після здачі — окремою домовленістю.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Чи зможу я сам редагувати сайт після здачі?</summary>
+        <p>Так. Віддаю чистий код без прив'язки до конструкторів — можеш редагувати сам або звернутись знову.</p>
+      </details>
+    </div>
   </div>
 
   <p class="section-eyebrow">$ mail --to=ivan --subject="замовлення"</p>
@@ -572,11 +828,16 @@
     <p class="contact-note">Без зобов'язань — відповідаю протягом дня.</p>
     <a class="contact-phone" href="tel:+380976875960">+380 97 687 59 60</a>
   </div>
-
-  <footer>
-    <span>© 2026 Іван Колодєєв</span>
-  </footer>
 </div>
+
+<footer>
+  <span>© 2026 Іван Колодєєв</span>
+  <span aria-hidden="true">·</span>
+  <a href="https://t.me/Theivankoo" target="_blank" rel="noopener">Telegram</a>
+  <span aria-hidden="true">·</span>
+  <a href="tel:+380976875960">+380 97 687 59 60</a>
+</footer>
+
 <a class="fab" href="https://t.me/Theivankoo" target="_blank" rel="noopener" aria-label="Написати в Telegram">
   <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
