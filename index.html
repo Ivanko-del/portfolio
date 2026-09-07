@@ -301,7 +301,19 @@
   }
   .stat-label { font-size: 12.5px; color: var(--text-dim); }
 
-  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 64px; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+  .quick-links { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 64px; }
+  .quick-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text-dimmer);
+    text-decoration: none;
+    border: 1px solid var(--line-soft);
+    padding: 5px 11px;
+    border-radius: 20px;
+    transition: border-color .15s ease, color .15s ease;
+  }
+  .quick-links a:hover, .quick-links a:focus-visible { border-color: var(--accent-dim); color: var(--accent); }
   .btn {
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
@@ -910,6 +922,13 @@
     <a class="btn" href="#projects">Дивитись проєкти</a>
   </div>
 
+  <div class="quick-links hero-anim" style="animation-delay:.55s">
+    <a href="#pricing">↓ Ціни</a>
+    <a href="#projects">↓ Проєкти</a>
+    <a href="#reviews">↓ Відгуки</a>
+    <a href="#faq">↓ Питання</a>
+  </div>
+
   <div class="section" id="about">
     <p class="section-eyebrow">$ cat ./about.md</p>
     <h2>Про мене</h2>
@@ -1336,6 +1355,40 @@
         <p>Так. Віддаю чистий код без прив'язки до конструкторів — можеш редагувати сам або звернутись знову.</p>
       </details>
     </div>
+
+    <details class="review-form-wrap reveal">
+      <summary class="review-form-toggle">+ Потрібне повернення коштів?</summary>
+      <form class="review-form" id="refundForm" novalidate>
+        <div class="form-row">
+          <label for="rfName">Ім'я *</label>
+          <input type="text" id="rfName" name="name" maxlength="80" required placeholder="Як до вас звертатись">
+        </div>
+        <div class="form-row">
+          <label for="rfContact">Контакт для звʼязку *</label>
+          <input type="text" id="rfContact" name="contact" maxlength="120" required placeholder="Telegram, телефон або email">
+        </div>
+        <div class="form-row form-row-split">
+          <div class="form-row">
+            <label for="rfOrder">Проєкт / замовлення (необов'язково)</label>
+            <input type="text" id="rfOrder" name="order_info" maxlength="200" placeholder="Наприклад, лендінг від 12.08">
+          </div>
+          <div class="form-row">
+            <label for="rfAmount">Сума (необов'язково)</label>
+            <input type="text" id="rfAmount" name="amount" maxlength="40" placeholder="Наприклад, 7 000 грн">
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="rfReason">Причина повернення *</label>
+          <textarea id="rfReason" name="reason" maxlength="800" rows="4" required placeholder="Опишіть, що сталося"></textarea>
+        </div>
+        <div class="hp-field" aria-hidden="true">
+          <label for="rfWebsite">Website</label>
+          <input type="text" id="rfWebsite" name="website" tabindex="-1" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary" id="rfSubmit" style="align-self:flex-start;">Надіслати заявку</button>
+        <p class="review-form-msg" id="refundFormMsg" role="status"></p>
+      </form>
+    </details>
   </div>
 
   <p class="section-eyebrow">$ mail --to=ivan --subject="замовлення"</p>
@@ -1456,6 +1509,62 @@
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
     sections.forEach(function (item) { observer.observe(item.section); });
+  })();
+
+  (function () {
+    var form = document.getElementById('refundForm');
+    if (!form) return;
+    var msgEl = document.getElementById('refundFormMsg');
+    var submitBtn = document.getElementById('rfSubmit');
+    var ENDPOINT = 'https://ywzgrdvupvmjonbxzavq.supabase.co/functions/v1/refund-request';
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      msgEl.textContent = '';
+      msgEl.className = 'review-form-msg';
+
+      var honeypot = form.querySelector('#rfWebsite').value;
+      var name = form.querySelector('#rfName').value.trim();
+      var contact = form.querySelector('#rfContact').value.trim();
+      var orderInfo = form.querySelector('#rfOrder').value.trim();
+      var amount = form.querySelector('#rfAmount').value.trim();
+      var reason = form.querySelector('#rfReason').value.trim();
+
+      if (!honeypot && (!name || !contact || !reason)) {
+        msgEl.textContent = "Заповніть ім'я, контакт і причину повернення.";
+        msgEl.className = 'review-form-msg is-error';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '.6';
+
+      fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name, contact: contact, order_info: orderInfo,
+          amount: amount, reason: reason, website: honeypot
+        })
+      }).then(function (res) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '';
+        if (res.status === 429) {
+          msgEl.textContent = 'Забагато заявок з цієї IP-адреси. Спробуйте пізніше або напишіть напряму в Telegram.';
+          msgEl.className = 'review-form-msg is-error';
+          return;
+        }
+        if (!res.ok) throw new Error('bad_response');
+        form.reset();
+        msgEl.textContent = "Заявку надіслано. Зв'яжусь з вами найближчим часом.";
+        msgEl.className = 'review-form-msg is-success';
+      }).catch(function () {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '';
+        msgEl.textContent = 'Не вдалось надіслати заявку. Напишіть напряму в Telegram.';
+        msgEl.className = 'review-form-msg is-error';
+      });
+    });
   })();
 
   document.addEventListener('DOMContentLoaded', function () {
