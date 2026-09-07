@@ -786,6 +786,19 @@
   }
   .contact-panel h2 { margin-bottom: 8px; }
   .contact-panel p { color: var(--text-dim); font-size: 14px; margin: 0 0 24px; }
+  .order-form { text-align: left; max-width: 380px; margin: 0 auto 22px; }
+  .order-form #ordSubmit { width: 100%; text-align: center; }
+  .order-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 380px;
+    margin: 0 auto 20px;
+    color: var(--text-dimmer);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+  }
+  .order-divider::before, .order-divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
   .contact-cta {
     position: relative;
     overflow: hidden;
@@ -1394,7 +1407,37 @@
   <p class="section-eyebrow">$ mail --to=ivan --subject="замовлення"</p>
   <div class="contact-panel reveal">
     <h2>Замовити сайт</h2>
-    <p>Пишіть — обговоримо задачу і терміни.</p>
+    <p>Залиште заявку — і я зв'яжусь з вами найближчим часом.</p>
+
+    <form class="review-form order-form" id="orderForm" novalidate>
+      <div class="form-row">
+        <label for="ordName">Ім'я *</label>
+        <input type="text" id="ordName" name="name" maxlength="80" required placeholder="Як до вас звертатись">
+      </div>
+      <div class="form-row">
+        <label for="ordSite">Сайт / бізнес (необов'язково)</label>
+        <input type="text" id="ordSite" name="site_info" maxlength="200" placeholder="Назва бізнесу або приклад сайту, який подобається">
+      </div>
+      <div class="form-row form-row-split">
+        <div class="form-row">
+          <label for="ordTg">Telegram</label>
+          <input type="text" id="ordTg" name="telegram" maxlength="60" placeholder="@nickname">
+        </div>
+        <div class="form-row">
+          <label for="ordPhone">Телефон</label>
+          <input type="text" id="ordPhone" name="phone" maxlength="40" placeholder="+380...">
+        </div>
+      </div>
+      <div class="hp-field" aria-hidden="true">
+        <label for="ordWebsite">Website</label>
+        <input type="text" id="ordWebsite" name="website" tabindex="-1" autocomplete="off">
+      </div>
+      <button type="submit" class="btn btn-primary" id="ordSubmit">Надіслати заявку</button>
+      <p class="review-form-msg" id="orderFormMsg" role="status"></p>
+    </form>
+
+    <p class="order-divider">або</p>
+
     <a class="contact-cta" href="https://t.me/Theivankoo" target="_blank" rel="noopener">Написати в Telegram ↗</a>
     <p class="contact-note">Без зобов'язань — відповідаю протягом дня.</p>
     <a class="contact-phone" href="tel:+380976875960">+380 97 687 59 60</a>
@@ -1557,6 +1600,61 @@
         if (!res.ok) throw new Error('bad_response');
         form.reset();
         msgEl.textContent = "Заявку надіслано. Зв'яжусь з вами найближчим часом.";
+        msgEl.className = 'review-form-msg is-success';
+      }).catch(function () {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '';
+        msgEl.textContent = 'Не вдалось надіслати заявку. Напишіть напряму в Telegram.';
+        msgEl.className = 'review-form-msg is-error';
+      });
+    });
+  })();
+
+  (function () {
+    var form = document.getElementById('orderForm');
+    if (!form) return;
+    var msgEl = document.getElementById('orderFormMsg');
+    var submitBtn = document.getElementById('ordSubmit');
+    var ENDPOINT = 'https://ywzgrdvupvmjonbxzavq.supabase.co/functions/v1/order-request';
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      msgEl.textContent = '';
+      msgEl.className = 'review-form-msg';
+
+      var honeypot = form.querySelector('#ordWebsite').value;
+      var name = form.querySelector('#ordName').value.trim();
+      var siteInfo = form.querySelector('#ordSite').value.trim();
+      var telegram = form.querySelector('#ordTg').value.trim();
+      var phone = form.querySelector('#ordPhone').value.trim();
+
+      if (!honeypot && (!name || (!telegram && !phone))) {
+        msgEl.textContent = "Вкажіть ім'я і хоча б один спосіб зв'язку (Telegram або телефон).";
+        msgEl.className = 'review-form-msg is-error';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '.6';
+
+      fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name, site_info: siteInfo, telegram: telegram,
+          phone: phone, website: honeypot
+        })
+      }).then(function (res) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '';
+        if (res.status === 429) {
+          msgEl.textContent = 'Забагато заявок з цієї IP-адреси. Спробуйте пізніше або напишіть напряму в Telegram.';
+          msgEl.className = 'review-form-msg is-error';
+          return;
+        }
+        if (!res.ok) throw new Error('bad_response');
+        form.reset();
+        msgEl.textContent = "Заявку надіслано. Зв'яжусь з вами найближчим часом!";
         msgEl.className = 'review-form-msg is-success';
       }).catch(function () {
         submitBtn.disabled = false;
