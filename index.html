@@ -598,10 +598,16 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
-    margin-bottom: 64px;
+    margin-bottom: 14px;
     perspective: 1000px;
   }
   @media (max-width: 560px) { .pricing-grid { grid-template-columns: 1fr; } }
+  .pricing-note {
+    font-size: 12.5px;
+    color: var(--text-dimmer);
+    margin: 0 0 64px;
+    line-height: 1.5;
+  }
   .pricing-card {
     position: relative;
     background: var(--bg-card);
@@ -940,7 +946,8 @@
     .wrap { padding: 44px 20px 32px; }
     .stat-row { gap: 20px; }
     .mid-cta { flex-direction: column; align-items: flex-start; }
-    .about-text, .tech-row, .pricing-grid, .process-list, .mid-cta, .projects, .faq-list { margin-bottom: 44px; }
+    .about-text, .tech-row, .process-list, .mid-cta, .projects, .faq-list { margin-bottom: 44px; }
+    .pricing-note { margin-bottom: 44px; }
   }
 
   /* wide-screen adaptation: give the layout room to breathe instead of
@@ -1116,6 +1123,7 @@
         </div>
       </div>
     </div>
+    <p class="pricing-note reveal">Ціни орієнтовні — фінальна вартість залежить від обсягу робіт і узгоджується перед стартом.</p>
   </div>
 
   <div class="section">
