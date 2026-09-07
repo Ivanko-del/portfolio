@@ -15,6 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root {
     --bg: #0d0f13;
@@ -309,9 +310,12 @@
     border: 1px solid var(--line);
     padding: 11px 18px;
     border-radius: 9px;
+    background: transparent;
+    cursor: pointer;
     transition: border-color .15s ease, color .15s ease, background .15s ease, transform .15s ease;
   }
   .btn:hover, .btn:focus-visible { border-color: var(--accent-dim); color: var(--accent); background: var(--accent-wash); transform: translateY(-1px); }
+  .btn:disabled { cursor: not-allowed; transform: none; }
   .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .btn-primary {
     position: relative;
@@ -371,6 +375,144 @@
   .tech-row.is-visible .tech-badge:nth-child(3) { animation-delay: .15s; }
   .tech-row.is-visible .tech-badge:nth-child(4) { animation-delay: .2s; }
   .tech-row.is-visible .tech-badge:nth-child(5) { animation-delay: .25s; }
+
+  /* why-me */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 64px;
+  }
+  @media (max-width: 560px) { .why-grid { grid-template-columns: 1fr; } }
+  .why-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    opacity: 0;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .why-grid.is-visible .why-card { animation: fade-in-only .5s ease forwards; }
+  .why-grid.is-visible .why-card:nth-child(1) { animation-delay: .05s; }
+  .why-grid.is-visible .why-card:nth-child(2) { animation-delay: .12s; }
+  .why-grid.is-visible .why-card:nth-child(3) { animation-delay: .19s; }
+  .why-grid.is-visible .why-card:nth-child(4) { animation-delay: .26s; }
+  .why-card:hover { border-color: var(--accent-dim); transform: translateY(-2px); }
+  .why-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--accent-wash);
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .why-title { font-weight: 600; font-size: 15.5px; margin: 0 0 6px; }
+  .why-desc { font-size: 13.5px; color: var(--text-dim); margin: 0; line-height: 1.55; }
+
+  /* reviews */
+  .reviews-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+  .reviews-empty {
+    font-size: 14px;
+    color: var(--text-dim);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+  }
+  .review-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .review-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 0 0 8px; }
+  .review-who { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .review-nick { font-weight: 600; font-size: 14.5px; }
+  .review-links { display: flex; gap: 8px; }
+  .review-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text-dimmer);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    padding: 2px 8px;
+    border-radius: 20px;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .review-links a:hover, .review-links a:focus-visible { color: var(--accent); border-color: var(--accent-dim); }
+  .review-stars { color: var(--accent); font-size: 14px; letter-spacing: 1px; white-space: nowrap; }
+  .review-stars .star-off { color: var(--line); }
+  .review-text { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin: 0; white-space: pre-wrap; word-break: break-word; }
+  .review-date { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dimmer); margin-top: 10px; }
+
+  .review-form-wrap {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    padding: 4px 20px;
+    margin-bottom: 64px;
+  }
+  .review-form-toggle {
+    cursor: pointer;
+    list-style: none;
+    padding: 16px 30px 16px 0;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    position: relative;
+  }
+  .review-form-toggle::-webkit-details-marker { display: none; }
+  .review-form-toggle::after {
+    content: '+';
+    position: absolute;
+    right: 4px;
+    top: 12px;
+    font-size: 20px;
+    transition: transform .2s ease;
+  }
+  .review-form-wrap[open] .review-form-toggle::after { transform: rotate(45deg); }
+  .review-form { padding-bottom: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .form-row { display: flex; flex-direction: column; gap: 6px; }
+  .form-row-split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 480px) { .form-row-split { grid-template-columns: 1fr; } }
+  .form-row label { font-size: 12.5px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+  .form-row input[type="text"], .form-row textarea {
+    font-family: 'Golos Text', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    resize: vertical;
+    transition: border-color .15s ease;
+  }
+  .form-row input[type="text"]:focus, .form-row textarea:focus {
+    outline: none;
+    border-color: var(--accent-dim);
+  }
+  .star-picker { display: flex; gap: 4px; }
+  .star-btn {
+    font-size: 24px;
+    line-height: 1;
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    color: var(--line);
+    transition: color .1s ease, transform .1s ease;
+  }
+  .star-btn:hover, .star-btn:focus-visible { transform: scale(1.12); }
+  .star-btn.is-filled { color: var(--accent); }
+  .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .review-form-msg { font-size: 13px; margin: 0; min-height: 1.2em; }
+  .review-form-msg.is-error { color: #e2726b; }
+  .review-form-msg.is-success { color: var(--teal); }
 
   /* pricing cards */
   .pricing-grid {
@@ -725,6 +867,7 @@
       <li><a href="#about">Про мене</a></li>
       <li><a href="#pricing">Ціни</a></li>
       <li><a href="#projects">Проєкти</a></li>
+      <li><a href="#reviews">Відгуки</a></li>
       <li><a href="#faq">Питання</a></li>
     </ul>
     <a class="nav-cta" href="https://t.me/Theivankoo" target="_blank" rel="noopener">Написати ↗</a>
@@ -771,6 +914,41 @@
     <p class="section-eyebrow">$ cat ./about.md</p>
     <h2>Про мене</h2>
     <p class="about-text reveal">Роблю сайти під замовлення — без агентської бюрократії і зайвих зустрічей. Веб-розробник: пишу код у парі з AI, тому результат готовий за дні, а не тижні, і це не заважає якості. Кожен проєкт — свій стиль під клієнта, без шаблонів.</p>
+  </div>
+
+  <div class="section">
+    <p class="section-eyebrow">$ cat ./why-me.md</p>
+    <h2>Чому саме я</h2>
+    <div class="why-grid reveal">
+      <div class="why-card">
+        <div class="why-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+        </div>
+        <p class="why-title">Швидко</p>
+        <p class="why-desc">Лендінг за 3–5 днів — працюю в парі з AI, без довгих узгоджень і очікування черги.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h8M8 8h8M8 16h5"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>
+        </div>
+        <p class="why-title">Напряму, без посередників</p>
+        <p class="why-desc">Спілкуєшся зі мною особисто в Telegram — жодних менеджерів і агентської бюрократії.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <p class="why-title">Чесна ціна</p>
+        <p class="why-desc">Фіксована вартість наперед — узгоджуємо суму до старту, без прихованих доплат.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>
+        </div>
+        <p class="why-title">Код у власність</p>
+        <p class="why-desc">Чистий код без прив'язки до конструкторів — редагуй сам або звертайся знову, вибір за тобою.</p>
+      </div>
+    </div>
   </div>
 
   <div class="section">
@@ -1088,6 +1266,55 @@
     </div>
   </div>
 
+  <div class="section" id="reviews">
+    <p class="section-eyebrow">$ cat ./reviews.json</p>
+    <h2>Відгуки</h2>
+
+    <div class="reviews-list reveal" id="reviewsList">
+      <p class="reviews-empty" id="reviewsEmpty">Завантажую відгуки…</p>
+    </div>
+
+    <details class="review-form-wrap reveal">
+      <summary class="review-form-toggle">+ Залишити відгук</summary>
+      <form class="review-form" id="reviewForm" novalidate>
+        <div class="form-row">
+          <label for="revNick">Нікнейм *</label>
+          <input type="text" id="revNick" name="nickname" maxlength="60" required placeholder="Наприклад, Олег">
+        </div>
+        <div class="form-row form-row-split">
+          <div class="form-row">
+            <label for="revSite">Сайт (необов'язково)</label>
+            <input type="text" id="revSite" name="site_url" maxlength="200" placeholder="example.com">
+          </div>
+          <div class="form-row">
+            <label for="revTg">Telegram (необов'язково)</label>
+            <input type="text" id="revTg" name="telegram" maxlength="60" placeholder="@nickname">
+          </div>
+        </div>
+        <div class="form-row">
+          <label id="starLabel">Оцінка *</label>
+          <div class="star-picker" id="starPicker" role="radiogroup" aria-labelledby="starLabel">
+            <button type="button" class="star-btn" data-value="1" role="radio" aria-checked="false" aria-label="1 зірка">★</button>
+            <button type="button" class="star-btn" data-value="2" role="radio" aria-checked="false" aria-label="2 зірки">★</button>
+            <button type="button" class="star-btn" data-value="3" role="radio" aria-checked="false" aria-label="3 зірки">★</button>
+            <button type="button" class="star-btn" data-value="4" role="radio" aria-checked="false" aria-label="4 зірки">★</button>
+            <button type="button" class="star-btn" data-value="5" role="radio" aria-checked="false" aria-label="5 зірок">★</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="revText">Відгук *</label>
+          <textarea id="revText" name="review_text" maxlength="600" rows="4" required placeholder="Розкажіть про досвід співпраці"></textarea>
+        </div>
+        <div class="hp-field" aria-hidden="true">
+          <label for="revWebsite">Website</label>
+          <input type="text" id="revWebsite" name="website" tabindex="-1" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary" id="revSubmit" style="align-self:flex-start;">Надіслати відгук</button>
+        <p class="review-form-msg" id="reviewFormMsg" role="status"></p>
+      </form>
+    </details>
+  </div>
+
   <div class="section" id="faq">
     <p class="section-eyebrow">$ cat ./faq.md</p>
     <h2>Питання</h2>
@@ -1230,6 +1457,205 @@
     }, { rootMargin: '-45% 0px -50% 0px' });
     sections.forEach(function (item) { observer.observe(item.section); });
   })();
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var SUPABASE_URL = 'https://ywzgrdvupvmjonbxzavq.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_98fnRyYsFRsi09tnUzqsBg__TZMTqek';
+    if (!window.supabase || !window.supabase.createClient) return;
+    var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    var listEl = document.getElementById('reviewsList');
+    var emptyEl = document.getElementById('reviewsEmpty');
+    var form = document.getElementById('reviewForm');
+    var starPicker = document.getElementById('starPicker');
+    var starBtns = starPicker ? starPicker.querySelectorAll('.star-btn') : [];
+    var msgEl = document.getElementById('reviewFormMsg');
+    var submitBtn = document.getElementById('revSubmit');
+    var currentRating = 0;
+
+    function setStars(value) {
+      currentRating = value;
+      starBtns.forEach(function (btn) {
+        var v = parseInt(btn.getAttribute('data-value'), 10);
+        btn.classList.toggle('is-filled', v <= value);
+        btn.setAttribute('aria-checked', v === value ? 'true' : 'false');
+      });
+    }
+    starBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        setStars(parseInt(btn.getAttribute('data-value'), 10));
+      });
+    });
+
+    function starsMarkup(rating) {
+      var wrap = document.createElement('span');
+      wrap.className = 'review-stars';
+      for (var i = 1; i <= 5; i++) {
+        var s = document.createElement('span');
+        s.textContent = '★';
+        if (i > rating) s.classList.add('star-off');
+        wrap.appendChild(s);
+      }
+      return wrap;
+    }
+
+    function safeSiteHref(raw) {
+      var v = (raw || '').trim();
+      if (!v) return null;
+      if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+      try {
+        var u = new URL(v);
+        if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+        return u.href;
+      } catch (e) { return null; }
+    }
+
+    function safeTelegramHandle(raw) {
+      var v = (raw || '').replace(/^@/, '').replace(/[^A-Za-z0-9_]/g, '').slice(0, 32);
+      return v || null;
+    }
+
+    function formatDate(iso) {
+      try {
+        return new Date(iso).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' });
+      } catch (e) { return ''; }
+    }
+
+    function renderReview(row, prepend) {
+      if (emptyEl) { emptyEl.remove(); emptyEl = null; }
+      var card = document.createElement('div');
+      card.className = 'review-card';
+
+      var top = document.createElement('div');
+      top.className = 'review-top';
+
+      var who = document.createElement('div');
+      who.className = 'review-who';
+      var nick = document.createElement('span');
+      nick.className = 'review-nick';
+      nick.textContent = row.nickname;
+      who.appendChild(nick);
+
+      var links = document.createElement('div');
+      links.className = 'review-links';
+      var siteHref = safeSiteHref(row.site_url);
+      if (siteHref) {
+        var a = document.createElement('a');
+        a.href = siteHref;
+        a.target = '_blank';
+        a.rel = 'noopener nofollow';
+        a.textContent = 'сайт ↗';
+        links.appendChild(a);
+      }
+      var tg = safeTelegramHandle(row.telegram);
+      if (tg) {
+        var t = document.createElement('a');
+        t.href = 'https://t.me/' + tg;
+        t.target = '_blank';
+        t.rel = 'noopener nofollow';
+        t.textContent = '@' + tg;
+        links.appendChild(t);
+      }
+      if (links.childNodes.length) who.appendChild(links);
+      top.appendChild(who);
+
+      var rating = Math.max(1, Math.min(5, parseInt(row.rating, 10) || 0));
+      top.appendChild(starsMarkup(rating));
+      card.appendChild(top);
+
+      var text = document.createElement('p');
+      text.className = 'review-text';
+      text.textContent = row.review_text;
+      card.appendChild(text);
+
+      if (row.created_at) {
+        var date = document.createElement('p');
+        date.className = 'review-date';
+        date.textContent = formatDate(row.created_at);
+        card.appendChild(date);
+      }
+
+      if (prepend && listEl.firstChild) {
+        listEl.insertBefore(card, listEl.firstChild);
+      } else {
+        listEl.appendChild(card);
+      }
+    }
+
+    function loadReviews() {
+      client.from('reviews').select('*').order('created_at', { ascending: false }).limit(50)
+        .then(function (res) {
+          if (res.error) throw res.error;
+          var rows = res.data || [];
+          if (!rows.length) {
+            if (emptyEl) emptyEl.textContent = 'Поки що відгуків немає — будь першим!';
+            return;
+          }
+          if (emptyEl) { emptyEl.remove(); emptyEl = null; }
+          rows.forEach(function (row) { renderReview(row, false); });
+        })
+        .catch(function () {
+          if (emptyEl) emptyEl.textContent = 'Не вдалось завантажити відгуки. Спробуйте оновити сторінку.';
+        });
+    }
+    loadReviews();
+
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        msgEl.textContent = '';
+        msgEl.className = 'review-form-msg';
+
+        var honeypot = form.querySelector('#revWebsite').value;
+        var nickname = form.querySelector('#revNick').value.trim();
+        var reviewText = form.querySelector('#revText').value.trim();
+        var siteUrl = form.querySelector('#revSite').value.trim();
+        var telegram = form.querySelector('#revTg').value.trim();
+
+        if (honeypot) {
+          form.reset();
+          setStars(0);
+          msgEl.textContent = 'Дякуємо за відгук!';
+          msgEl.className = 'review-form-msg is-success';
+          return;
+        }
+        if (!nickname || !reviewText || currentRating < 1) {
+          msgEl.textContent = 'Заповніть нікнейм, оцінку і текст відгуку.';
+          msgEl.className = 'review-form-msg is-error';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '.6';
+
+        client.from('reviews').insert({
+          nickname: nickname.slice(0, 60),
+          site_url: siteUrl ? siteUrl.slice(0, 200) : null,
+          telegram: telegram ? telegram.slice(0, 60) : null,
+          rating: currentRating,
+          review_text: reviewText.slice(0, 600)
+        }).select().then(function (res) {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '';
+          if (res.error) throw res.error;
+          var row = (res.data && res.data[0]) || {
+            nickname: nickname, site_url: siteUrl, telegram: telegram,
+            rating: currentRating, review_text: reviewText, created_at: new Date().toISOString()
+          };
+          renderReview(row, true);
+          form.reset();
+          setStars(0);
+          msgEl.textContent = 'Дякуємо за відгук!';
+          msgEl.className = 'review-form-msg is-success';
+        }).catch(function () {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '';
+          msgEl.textContent = 'Не вдалось надіслати відгук. Спробуйте ще раз.';
+          msgEl.className = 'review-form-msg is-error';
+        });
+      });
+    }
+  });
 </script>
 </body>
 </html>
