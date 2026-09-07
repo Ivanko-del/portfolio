@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://portfolio-bay-nine-ylmtyxfqmy.vercel.app/sitemap.xml

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Статистика</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f13;
+    --bg-card: #181b22;
+    --line: #262a33;
+    --text: #f3f1ea;
+    --text-dim: #8d9099;
+    --text-dimmer: #5e6169;
+    --accent: #e8a33d;
+    --accent-wash: rgba(232, 163, 61, 0.08);
+    --teal: #5fb8ac;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Golos Text', sans-serif;
+    line-height: 1.5;
+    padding: 40px 20px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 26px; font-weight: 700; margin: 0 0 6px; }
+  .sub { color: var(--text-dim); font-size: 13.5px; margin: 0 0 32px; font-family: 'JetBrains Mono', monospace; }
+  .gate {
+    max-width: 340px;
+    margin: 80px auto;
+    text-align: center;
+  }
+  .gate input {
+    width: 100%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 14px 0;
+  }
+  .gate button, .logout {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+  }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr 1fr; } }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .stat-num { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; color: var(--accent); }
+  .stat-num.teal { color: var(--teal); }
+  .stat-label { font-size: 12.5px; color: var(--text-dim); margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 10px 14px; font-size: 13.5px; border-bottom: 1px solid var(--line); }
+  th { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+  tr:last-child td { border-bottom: none; }
+  .error { color: #e2726b; font-size: 13.5px; margin-top: 10px; }
+  .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="gate" class="gate">
+    <h1>Статистика</h1>
+    <p class="sub">Введи ключ доступу</p>
+    <input type="password" id="keyInput" placeholder="admin key">
+    <br>
+    <button id="keyBtn">Увійти</button>
+    <p class="error" id="gateError" hidden></p>
+  </div>
+
+  <div id="dashboard" hidden>
+    <div class="top-row">
+      <div>
+        <h1>Статистика сайту</h1>
+        <p class="sub" id="updatedAt">оновлюється кожні 20с</p>
+      </div>
+      <button class="logout" id="logoutBtn">Вийти</button>
+    </div>
+
+    <div class="grid">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">–</div>
+        <div class="stat-label">Всього відвідувачів</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num teal" id="statOnline">–</div>
+        <div class="stat-label">Зараз на сайті</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statToday">–</div>
+        <div class="stat-label">Сьогодні</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statOrders">–</div>
+        <div class="stat-label">Заявок на замовлення</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statRefunds">–</div>
+        <div class="stat-label">Заявок на повернення</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statReviews">–</div>
+        <div class="stat-label">Відгуків залишено</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Кнопка</th><th>Людей натиснуло</th><th>Всього кліків</th></tr>
+      </thead>
+      <tbody id="ctaTable"></tbody>
+    </table>
+    <p class="error" id="dashError" hidden></p>
+  </div>
+</div>
+
+<script>
+  var ENDPOINT = 'https://ywzgrdvupvmjonbxzavq.supabase.co/functions/v1/get-stats';
+  var CTA_LABELS = {
+    hero_order_btn: 'Замовити сайт (хіро)',
+    nav_cta: 'Написати (меню)',
+    mid_cta: 'Написати в Telegram (посеред сторінки)',
+    contact_telegram_cta: 'Написати в Telegram (контакти)',
+    fab_telegram: 'Плаваюча кнопка Telegram'
+  };
+
+  var gate = document.getElementById('gate');
+  var dashboard = document.getElementById('dashboard');
+  var keyInput = document.getElementById('keyInput');
+  var gateError = document.getElementById('gateError');
+  var dashError = document.getElementById('dashError');
+  var updatedAt = document.getElementById('updatedAt');
+  var refreshTimer = null;
+
+  function getSavedKey() {
+    try { return localStorage.getItem('pf_admin_key'); } catch (e) { return null; }
+  }
+  function saveKey(k) {
+    try { localStorage.setItem('pf_admin_key', k); } catch (e) {}
+  }
+  function clearKey() {
+    try { localStorage.removeItem('pf_admin_key'); } catch (e) {}
+  }
+
+  function render(data) {
+    document.getElementById('statTotal').textContent = data.total_visitors;
+    document.getElementById('statOnline').textContent = data.online_now;
+    document.getElementById('statToday').textContent = data.visitors_today;
+    document.getElementById('statOrders').textContent = data.order_requests;
+    document.getElementById('statRefunds').textContent = data.refund_requests;
+    document.getElementById('statReviews').textContent = data.reviews;
+
+    var tbody = document.getElementById('ctaTable');
+    tbody.innerHTML = '';
+    if (!data.cta_breakdown || !data.cta_breakdown.length) {
+      var tr = document.createElement('tr');
+      var td = document.createElement('td');
+      td.colSpan = 3;
+      td.textContent = 'Ще немає кліків';
+      td.style.color = 'var(--text-dim)';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    } else {
+      data.cta_breakdown.forEach(function (row) {
+        var tr = document.createElement('tr');
+        var name = document.createElement('td');
+        name.textContent = CTA_LABELS[row.name] || row.name;
+        var uniq = document.createElement('td');
+        uniq.textContent = row.unique;
+        var total = document.createElement('td');
+        total.textContent = row.total;
+        tr.appendChild(name); tr.appendChild(uniq); tr.appendChild(total);
+        tbody.appendChild(tr);
+      });
+    }
+    updatedAt.textContent = 'оновлено ' + new Date().toLocaleTimeString('uk-UA') + ' · оновлюється кожні 20с';
+  }
+
+  function loadStats(key) {
+    fetch(ENDPOINT + '?key=' + encodeURIComponent(key))
+      .then(function (res) {
+        if (res.status === 401) throw new Error('unauthorized');
+        if (!res.ok) throw new Error('bad_response');
+        return res.json();
+      })
+      .then(function (data) {
+        gate.hidden = true;
+        dashboard.hidden = false;
+        dashError.hidden = true;
+        render(data);
+        if (!refreshTimer) refreshTimer = setInterval(function () { loadStats(key); }, 20000);
+      })
+      .catch(function (err) {
+        if (err.message === 'unauthorized') {
+          clearKey();
+          gate.hidden = false;
+          dashboard.hidden = true;
+          gateError.textContent = 'Невірний ключ';
+          gateError.hidden = false;
+          if (refreshTimer) { clearInterval(refreshTimer); refreshTimer = null; }
+        } else {
+          dashError.textContent = 'Не вдалось оновити дані';
+          dashError.hidden = false;
+        }
+      });
+  }
+
+  document.getElementById('keyBtn').addEventListener('click', function () {
+    var k = keyInput.value.trim();
+    if (!k) return;
+    saveKey(k);
+    loadStats(k);
+  });
+  keyInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') document.getElementById('keyBtn').click();
+  });
+  document.getElementById('logoutBtn').addEventListener('click', function () {
+    clearKey();
+    if (refreshTimer) { clearInterval(refreshTimer); refreshTimer = null; }
+    dashboard.hidden = true;
+    gate.hidden = false;
+    keyInput.value = '';
+  });
+
+  var saved = getSavedKey();
+  if (saved) loadStats(saved);
+</script>
+</body>
+</html>
