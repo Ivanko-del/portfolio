@@ -876,7 +876,8 @@
   .contact-panel h2 { margin-bottom: 8px; }
   .contact-panel p { color: var(--text-dim); font-size: 14px; margin: 0 0 24px; }
   .order-form { text-align: left; max-width: 380px; margin: 0 auto 22px; }
-  .order-form #ordSubmit { width: 100%; text-align: center; }
+  .order-form-actions { display: flex; flex-direction: column; gap: 10px; }
+  .order-form-actions .btn { width: 100%; text-align: center; }
   .order-divider {
     display: flex;
     align-items: center;
@@ -948,6 +949,8 @@
     .mid-cta { flex-direction: column; align-items: flex-start; }
     .about-text, .tech-row, .process-list, .mid-cta, .projects, .faq-list { margin-bottom: 44px; }
     .pricing-note { margin-bottom: 44px; }
+    .fab { width: 46px; height: 46px; bottom: 16px; right: 16px; }
+    .fab svg { width: 20px; height: 20px; }
   }
 
   /* wide-screen adaptation: give the layout room to breathe instead of
@@ -1527,11 +1530,11 @@
       </div>
       <div class="form-row form-row-split">
         <div class="form-row">
-          <label for="ordTg">Telegram</label>
-          <input type="text" id="ordTg" name="telegram" maxlength="60" placeholder="@nickname">
+          <label for="ordTg">Telegram *</label>
+          <input type="text" id="ordTg" name="telegram" maxlength="60" required placeholder="@nickname">
         </div>
         <div class="form-row">
-          <label for="ordPhone">Телефон</label>
+          <label for="ordPhone">Телефон (необов'язково)</label>
           <input type="text" id="ordPhone" name="phone" maxlength="40" placeholder="+380...">
         </div>
       </div>
@@ -1539,7 +1542,10 @@
         <label for="ordWebsite">Website</label>
         <input type="text" id="ordWebsite" name="website" tabindex="-1" autocomplete="off">
       </div>
-      <button type="submit" class="btn btn-primary" id="ordSubmit">Надіслати заявку</button>
+      <div class="order-form-actions">
+        <button type="submit" class="btn btn-primary" id="ordSubmit">Надіслати заявку</button>
+        <button type="button" class="btn" id="ordTelegramContinue">Продовжити в Telegram ↗</button>
+      </div>
       <p class="review-form-msg" id="orderFormMsg" role="status"></p>
     </form>
 
@@ -1749,8 +1755,8 @@
       var telegram = form.querySelector('#ordTg').value.trim();
       var phone = form.querySelector('#ordPhone').value.trim();
 
-      if (!honeypot && (!name || (!telegram && !phone))) {
-        msgEl.textContent = "Вкажіть ім'я і хоча б один спосіб зв'язку (Telegram або телефон).";
+      if (!honeypot && (!name || !telegram)) {
+        msgEl.textContent = "Вкажіть ім'я і Telegram — це обов'язкові поля.";
         msgEl.className = 'review-form-msg is-error';
         return;
       }
@@ -1784,6 +1790,20 @@
         msgEl.className = 'review-form-msg is-error';
       });
     });
+
+    var tgContinueBtn = document.getElementById('ordTelegramContinue');
+    if (tgContinueBtn) {
+      tgContinueBtn.addEventListener('click', function () {
+        var name = form.querySelector('#ordName').value.trim();
+        var siteInfo = form.querySelector('#ordSite').value.trim();
+        var lines = [];
+        if (name) lines.push("Мене звати " + name + ".");
+        if (siteInfo) lines.push('Сайт/бізнес: ' + siteInfo + '.');
+        lines.push('Хочу замовити сайт.');
+        var text = lines.join(' ');
+        window.open('https://t.me/Theivankoo?text=' + encodeURIComponent(text), '_blank', 'noopener');
+      });
+    }
   })();
 
   document.addEventListener('DOMContentLoaded', function () {
