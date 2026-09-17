@@ -836,6 +836,7 @@
   .faq-list.is-visible .faq-item:nth-child(2) { animation-delay: .15s; }
   .faq-list.is-visible .faq-item:nth-child(3) { animation-delay: .25s; }
   .faq-list.is-visible .faq-item:nth-child(4) { animation-delay: .35s; }
+  .faq-list.is-visible .faq-item:nth-child(5) { animation-delay: .45s; }
 
   .fab {
     position: fixed;
