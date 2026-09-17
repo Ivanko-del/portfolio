@@ -771,6 +771,17 @@
     word-break: break-all;
   }
   .project-desc { font-size: 14px; color: var(--text-dim); margin: 0; line-height: 1.55; }
+  .project-result {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 10px 0 0;
+  }
+  .project-result::before { content: '✓'; }
   .project-preview {
     margin: -20px -22px 16px;
     height: 150px;
@@ -876,7 +887,8 @@
   .contact-panel h2 { margin-bottom: 8px; }
   .contact-panel p { color: var(--text-dim); font-size: 14px; margin: 0 0 24px; }
   .order-form { text-align: left; max-width: 380px; margin: 0 auto 22px; }
-  .order-form #ordSubmit { width: 100%; text-align: center; }
+  .order-form-actions { display: flex; flex-direction: column; gap: 10px; }
+  .order-form-actions .btn { width: 100%; text-align: center; }
   .order-divider {
     display: flex;
     align-items: center;
@@ -948,6 +960,8 @@
     .mid-cta { flex-direction: column; align-items: flex-start; }
     .about-text, .tech-row, .process-list, .mid-cta, .projects, .faq-list { margin-bottom: 44px; }
     .pricing-note { margin-bottom: 44px; }
+    .fab { width: 46px; height: 46px; bottom: 16px; right: 16px; }
+    .fab svg { width: 20px; height: 20px; }
   }
 
   /* wide-screen adaptation: give the layout room to breathe instead of
@@ -1227,6 +1241,7 @@
         </div>
         <p class="project-domain">slot-ok-beta.vercel.app</p>
         <p class="project-desc">Соціальне демо-казино на віртуальній валюті — 30+ міні-ігор, банк, чат, VIP-система.</p>
+        <p class="project-result">Зроблено за 7 днів</p>
       </a>
 
       <a class="project reveal" style="animation-delay:.12s" href="https://ivan-site-nine.vercel.app/" target="_blank" rel="noopener">
@@ -1263,6 +1278,7 @@
         </div>
         <p class="project-domain">ivan-site-nine.vercel.app</p>
         <p class="project-desc">Лендінг для замовлення сайтів під ключ — портфоліо робіт і форма зв'язку.</p>
+        <p class="project-result">Зроблено за 5 днів</p>
       </a>
 
       <a class="project reveal" style="animation-delay:.18s" href="https://aurora-nine-beige.vercel.app/" target="_blank" rel="noopener">
@@ -1304,6 +1320,7 @@
         </div>
         <p class="project-domain">aurora-nine-beige.vercel.app</p>
         <p class="project-desc">Багатосторінковий концепт-сайт приватних космічних подорожей — 5 сторінок, від напрямків до бронювання.</p>
+        <p class="project-result">Зроблено за 7 днів</p>
       </a>
 
       <a class="project reveal" style="animation-delay:.25s" href="https://shop-xi-one-17.vercel.app/" target="_blank" rel="noopener">
@@ -1343,6 +1360,7 @@
         </div>
         <p class="project-domain">shop-xi-one-17.vercel.app</p>
         <p class="project-desc">Інтернет-магазин одягу — категорії, кошик, сторінки товарів і розпродаж.</p>
+        <p class="project-result">Зроблено за 9 днів</p>
       </a>
 
       <a class="project reveal" style="animation-delay:.32s" href="https://lupa-coffe.vercel.app/" target="_blank" rel="noopener">
@@ -1379,6 +1397,7 @@
         </div>
         <p class="project-domain">lupa-coffe.vercel.app</p>
         <p class="project-desc">Кав'ярня «Липа» в центрі Києва — меню, галерея, відгуки та онлайн-бронювання столика.</p>
+        <p class="project-result">Зроблено за 8 днів</p>
       </a>
 
       <!--
@@ -1527,11 +1546,11 @@
       </div>
       <div class="form-row form-row-split">
         <div class="form-row">
-          <label for="ordTg">Telegram</label>
-          <input type="text" id="ordTg" name="telegram" maxlength="60" placeholder="@nickname">
+          <label for="ordTg">Telegram *</label>
+          <input type="text" id="ordTg" name="telegram" maxlength="60" required placeholder="@nickname">
         </div>
         <div class="form-row">
-          <label for="ordPhone">Телефон</label>
+          <label for="ordPhone">Телефон (необов'язково)</label>
           <input type="text" id="ordPhone" name="phone" maxlength="40" placeholder="+380...">
         </div>
       </div>
@@ -1539,7 +1558,10 @@
         <label for="ordWebsite">Website</label>
         <input type="text" id="ordWebsite" name="website" tabindex="-1" autocomplete="off">
       </div>
-      <button type="submit" class="btn btn-primary" id="ordSubmit">Надіслати заявку</button>
+      <div class="order-form-actions">
+        <button type="submit" class="btn btn-primary" id="ordSubmit">Надіслати заявку</button>
+        <button type="button" class="btn" id="ordTelegramContinue">Продовжити в Telegram ↗</button>
+      </div>
       <p class="review-form-msg" id="orderFormMsg" role="status"></p>
     </form>
 
@@ -1749,8 +1771,8 @@
       var telegram = form.querySelector('#ordTg').value.trim();
       var phone = form.querySelector('#ordPhone').value.trim();
 
-      if (!honeypot && (!name || (!telegram && !phone))) {
-        msgEl.textContent = "Вкажіть ім'я і хоча б один спосіб зв'язку (Telegram або телефон).";
+      if (!honeypot && (!name || !telegram)) {
+        msgEl.textContent = "Вкажіть ім'я і Telegram — це обов'язкові поля.";
         msgEl.className = 'review-form-msg is-error';
         return;
       }
@@ -1784,6 +1806,20 @@
         msgEl.className = 'review-form-msg is-error';
       });
     });
+
+    var tgContinueBtn = document.getElementById('ordTelegramContinue');
+    if (tgContinueBtn) {
+      tgContinueBtn.addEventListener('click', function () {
+        var name = form.querySelector('#ordName').value.trim();
+        var siteInfo = form.querySelector('#ordSite').value.trim();
+        var lines = [];
+        if (name) lines.push("Мене звати " + name + ".");
+        if (siteInfo) lines.push('Сайт/бізнес: ' + siteInfo + '.');
+        lines.push('Хочу замовити сайт.');
+        var text = lines.join(' ');
+        window.open('https://t.me/Theivankoo?text=' + encodeURIComponent(text), '_blank', 'noopener');
+      });
+    }
   })();
 
   document.addEventListener('DOMContentLoaded', function () {
