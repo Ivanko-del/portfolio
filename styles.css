@@ -459,15 +459,23 @@
 
   /* reviews */
   .reviews-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; perspective: 1200px; }
+  .reviews-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+  }
   .reviews-empty {
     font-size: 14px;
     color: var(--text-dim);
-    border: 1px dashed var(--line);
-    border-radius: var(--radius);
-    padding: 20px;
     text-align: center;
     margin: 0;
   }
+  .reviews-empty-cta { font-size: 13px; padding: 9px 18px; }
+  .review-form-hint { font-size: 12px; color: var(--text-dimmer); margin: 0 0 4px; line-height: 1.5; }
   .review-card {
     position: relative;
     overflow: hidden;
@@ -614,6 +622,7 @@
   }
   .pricing-card:hover::after { opacity: 1; }
   .pricing-card.is-popular { border-color: var(--accent-dim); background: linear-gradient(160deg, var(--accent-wash), var(--bg-card) 55%); }
+  .pricing-card.is-starter { border-style: dashed; border-color: var(--accent-dim); }
   .pricing-badge {
     position: absolute;
     top: -11px;
@@ -751,6 +760,18 @@
     color: var(--accent);
     margin: 0 0 9px;
     word-break: break-all;
+  }
+  .project-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    color: var(--text-dim);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 3px 9px;
+    margin: 0 0 10px;
   }
   .project-desc { font-size: 14px; color: var(--text-dim); margin: 0; line-height: 1.55; }
   .project-result {
@@ -899,16 +920,7 @@
   }
   .contact-cta:hover, .contact-cta:focus-visible { opacity: .88; transform: translateY(-1px); }
   .contact-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  .contact-phone {
-    display: block;
-    margin-top: 18px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--text-dim);
-    text-decoration: none;
-  }
   .contact-note { font-size: 12px; color: var(--text-dimmer); margin: 16px 0 0; }
-  .contact-phone:hover, .contact-phone:focus-visible { color: var(--accent); }
 
   footer {
     position: relative;
