@@ -178,6 +178,14 @@
     <p class="section-eyebrow">$ cat ./pricing.json</p>
     <h2>Services and pricing</h2>
     <div class="pricing-grid">
+      <div class="pricing-card is-starter reveal" style="animation-delay:.02s">
+        <p class="pricing-name">First clients</p>
+        <p class="pricing-desc">A landing page or one-page site at a starter price. The condition: after delivery you leave a review and let me show the work in my portfolio.</p>
+        <div class="pricing-price">
+          <span class="price-uah">from $45</span>
+          <span class="price-usd">2 000 ₴</span>
+        </div>
+      </div>
       <div class="pricing-card reveal" style="animation-delay:.05s">
         <p class="pricing-name">Landing page</p>
         <p class="pricing-desc">A single-page site end to end — design, responsive layout, contact form.</p>
@@ -267,52 +275,7 @@
     <h2>Projects</h2>
 
     <div class="projects">
-      <a class="project reveal" style="animation-delay:.05s" href="https://slot-ok-beta.vercel.app/" target="_blank" rel="noopener">
-        <div class="project-preview" aria-hidden="true">
-          <svg viewBox="0 0 640 200" preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <linearGradient id="slotok-bg" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#241129"/>
-                <stop offset="100%" stop-color="#150b1e"/>
-              </linearGradient>
-              <radialGradient id="slotok-glow" cx="55%" cy="35%" r="65%">
-                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.35"/>
-                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
-              </radialGradient>
-            </defs>
-            <rect width="640" height="200" fill="url(#slotok-bg)"/>
-            <rect width="640" height="200" fill="url(#slotok-glow)"/>
-            <g transform="translate(88,28) scale(0.72)">
-              <circle cx="20" cy="18" r="4" fill="#5c5470"/>
-              <circle cx="34" cy="18" r="4" fill="#5c5470"/>
-              <circle cx="48" cy="18" r="4" fill="#5c5470"/>
-              <rect x="220" y="52" width="200" height="110" rx="14" fill="#0f0816" stroke="var(--accent)" stroke-width="2" stroke-opacity="0.5"/>
-              <rect x="238" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
-              <rect x="297" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
-              <rect x="356" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
-              <text x="261" y="115" font-size="30" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="var(--accent)">7</text>
-              <text x="320" y="115" font-size="26" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="#f0ede4">★</text>
-              <text x="379" y="115" font-size="30" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="var(--accent)">7</text>
-              <circle cx="470" cy="78" r="9" fill="var(--accent)"/>
-              <circle cx="490" cy="94" r="9" fill="var(--accent)" opacity="0.7"/>
-              <circle cx="463" cy="104" r="9" fill="var(--accent)" opacity="0.5"/>
-              <rect x="150" y="140" width="92" height="30" rx="10" fill="#2a1c38" opacity="0.85"/>
-              <circle cx="167" cy="155" r="3" fill="#8d9099"/>
-              <circle cx="180" cy="155" r="3" fill="#8d9099"/>
-              <circle cx="193" cy="155" r="3" fill="#8d9099"/>
-            </g>
-          </svg>
-        </div>
-        <div class="project-top">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span class="project-name">SlotOK</span>
-          <span class="project-arrow" aria-hidden="true">↗</span>
-        </div>
-        <p class="project-domain">slot-ok-beta.vercel.app</p>
-        <p class="project-desc">A social demo casino running on virtual currency — 30+ mini-games, a bank, live chat and a VIP system.</p>
-        <p class="project-result">Built in 7 days</p>
-      </a>
-
+      
       <a class="project reveal" style="animation-delay:.12s" href="https://ivan-site-nine.vercel.app/" target="_blank" rel="noopener">
         <div class="project-preview" aria-hidden="true">
           <svg viewBox="0 0 640 200" preserveAspectRatio="xMidYMid slice">
@@ -388,7 +351,8 @@
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
         <p class="project-domain">aurora-nine-beige.vercel.app</p>
-        <p class="project-desc">A multi-page concept site for private space travel — five pages, from destinations through to booking.</p>
+        <span class="project-tag">Concept / demo project</span>
+        <p class="project-desc">A multi-page site for private space travel — five pages, from destinations through to booking.</p>
         <p class="project-result">Built in 7 days</p>
       </a>
 
@@ -428,6 +392,7 @@
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
         <p class="project-domain">shop-xi-one-17.vercel.app</p>
+        <span class="project-tag">Concept / demo project</span>
         <p class="project-desc">A clothing store — categories, cart, product pages and a sale section.</p>
         <p class="project-result">Built in 9 days</p>
       </a>
@@ -465,8 +430,55 @@
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
         <p class="project-domain">lupa-coffe.vercel.app</p>
+        <span class="project-tag">Concept / demo project</span>
         <p class="project-desc">LYPA, a coffee house in central Kyiv — menu, gallery, reviews and online table booking.</p>
         <p class="project-result">Built in 8 days</p>
+      </a>
+
+      <a class="project reveal" style="animation-delay:.38s" href="https://slot-ok-beta.vercel.app/" target="_blank" rel="noopener">
+        <div class="project-preview" aria-hidden="true">
+          <svg viewBox="0 0 640 200" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="slotok-bg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#241129"/>
+                <stop offset="100%" stop-color="#150b1e"/>
+              </linearGradient>
+              <radialGradient id="slotok-glow" cx="55%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="640" height="200" fill="url(#slotok-bg)"/>
+            <rect width="640" height="200" fill="url(#slotok-glow)"/>
+            <g transform="translate(88,28) scale(0.72)">
+              <circle cx="20" cy="18" r="4" fill="#5c5470"/>
+              <circle cx="34" cy="18" r="4" fill="#5c5470"/>
+              <circle cx="48" cy="18" r="4" fill="#5c5470"/>
+              <rect x="220" y="52" width="200" height="110" rx="14" fill="#0f0816" stroke="var(--accent)" stroke-width="2" stroke-opacity="0.5"/>
+              <rect x="238" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
+              <rect x="297" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
+              <rect x="356" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
+              <text x="261" y="115" font-size="30" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="var(--accent)">7</text>
+              <text x="320" y="115" font-size="26" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="#f0ede4">★</text>
+              <text x="379" y="115" font-size="30" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="var(--accent)">7</text>
+              <circle cx="470" cy="78" r="9" fill="var(--accent)"/>
+              <circle cx="490" cy="94" r="9" fill="var(--accent)" opacity="0.7"/>
+              <circle cx="463" cy="104" r="9" fill="var(--accent)" opacity="0.5"/>
+              <rect x="150" y="140" width="92" height="30" rx="10" fill="#2a1c38" opacity="0.85"/>
+              <circle cx="167" cy="155" r="3" fill="#8d9099"/>
+              <circle cx="180" cy="155" r="3" fill="#8d9099"/>
+              <circle cx="193" cy="155" r="3" fill="#8d9099"/>
+            </g>
+          </svg>
+        </div>
+        <div class="project-top">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="project-name">SlotOK</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+        <p class="project-domain">slot-ok-beta.vercel.app</p>
+        <p class="project-desc">A social game running on virtual currency — no real money involved.</p>
+        <p class="project-result">Built in 7 days</p>
       </a>
 
       <!--
@@ -499,12 +511,16 @@
     <h2>Reviews</h2>
 
     <div class="reviews-list reveal" id="reviewsList">
-      <p class="reviews-empty" id="reviewsEmpty">Loading reviews…</p>
+      <div class="reviews-state" id="reviewsState">
+        <p class="reviews-empty" id="reviewsEmpty">No reviews yet — be the first one!</p>
+        <button type="button" class="btn reviews-empty-cta" id="reviewsEmptyCta">Leave a review</button>
+      </div>
     </div>
 
     <details class="review-form-wrap reveal">
       <summary class="review-form-toggle">+ Leave a review</summary>
       <form class="review-form" id="reviewForm" novalidate>
+        <p class="review-form-hint">Reviews go live after I have checked them — usually within a day.</p>
         <div class="form-row">
           <label for="revNick">Nickname *</label>
           <input type="text" id="revNick" name="nickname" maxlength="60" required placeholder="e.g. Alex">
@@ -643,7 +659,6 @@
 
     <a class="contact-cta" data-cta="contact_telegram_cta" href="https://t.me/Theivankoo" target="_blank" rel="noopener">Message me on Telegram ↗</a>
     <p class="contact-note">No commitment — I reply within the day.</p>
-    <a class="contact-phone" href="tel:+380976875960">+380 97 687 59 60</a>
   </div>
 </div>
 
@@ -651,8 +666,6 @@
   <span>© 2026 Ivan Kolodieiev</span>
   <span aria-hidden="true">·</span>
   <a href="https://t.me/Theivankoo" target="_blank" rel="noopener">Telegram</a>
-  <span aria-hidden="true">·</span>
-  <a href="tel:+380976875960">+380 97 687 59 60</a>
   <span aria-hidden="true">·</span>
   <a href="/" hreflang="uk">Українська</a>
 </footer>

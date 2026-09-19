@@ -7,9 +7,10 @@
     uk: {
       locale: 'uk-UA',
       siteLink: 'сайт ↗',
+      reviewsLoading: 'Завантажую відгуки…',
       reviewsEmpty: 'Поки що відгуків немає — будь першим!',
       reviewsFailed: 'Не вдалось завантажити відгуки. Спробуйте оновити сторінку.',
-      reviewThanks: 'Дякуємо за відгук!',
+      reviewThanks: 'Дякуємо! Відгук з\'явиться на сайті після моєї перевірки.',
       reviewIncomplete: 'Заповніть нікнейм, оцінку і текст відгуку.',
       reviewFailed: 'Не вдалось надіслати відгук. Спробуйте ще раз.',
       rateLimited: 'Забагато заявок з цієї IP-адреси. Спробуйте пізніше або напишіть напряму в Telegram.',
@@ -25,9 +26,10 @@
     en: {
       locale: 'en-US',
       siteLink: 'website ↗',
+      reviewsLoading: 'Loading reviews…',
       reviewsEmpty: 'No reviews yet — be the first one!',
       reviewsFailed: 'Could not load the reviews. Please refresh the page.',
-      reviewThanks: 'Thanks for your review!',
+      reviewThanks: 'Thanks! Your review will go live once I have checked it.',
       reviewIncomplete: 'Please fill in a nickname, a rating and the review text.',
       reviewFailed: 'Could not submit the review. Please try again.',
       rateLimited: 'Too many requests from this IP address. Please try later, or message me directly on Telegram.',
@@ -159,6 +161,54 @@
     sections.forEach(function (item) { observer.observe(item.section); });
   })();
 
+  /* ---------- reviews empty / loading / error state ----------
+     The <div id="reviewsState"> ships rendered as the empty state, so a
+     visitor whose JS or CDN is blocked still sees a usable section instead
+     of a "Loading…" line that hangs forever. */
+  var reviewsState = (function () {
+    var wrap = document.getElementById('reviewsState');
+    var textEl = document.getElementById('reviewsEmpty');
+    var ctaEl = document.getElementById('reviewsEmptyCta');
+    var settled = false;
+
+    if (ctaEl) {
+      ctaEl.addEventListener('click', function () {
+        var details = document.querySelector('.review-form-wrap');
+        var form = document.getElementById('reviewForm');
+        if (!details || !form || !details.contains(form)) return;
+        details.open = true;
+        var nick = document.getElementById('revNick');
+        if (nick) {
+          nick.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          nick.focus({ preventScroll: true });
+        }
+      });
+    }
+
+    function show(text, withCta) {
+      if (!wrap || !textEl) return;
+      textEl.textContent = text;
+      if (ctaEl) ctaEl.hidden = !withCta;
+      wrap.hidden = false;
+    }
+
+    return {
+      loading: function () { show(T.reviewsLoading, false); },
+      empty: function () { settled = true; show(T.reviewsEmpty, true); },
+      failed: function () { settled = true; show(T.reviewsFailed, true); },
+      hide: function () { settled = true; if (wrap) wrap.remove(); wrap = textEl = ctaEl = null; },
+      isSettled: function () { return settled; }
+    };
+  })();
+
+  /* Watchdog: whatever goes wrong downstream — the Supabase CDN never loads,
+     the request stalls, an exception fires — the section never stays stuck
+     on "Loading…". */
+  var REVIEWS_TIMEOUT_MS = 8000;
+  setTimeout(function () {
+    if (!reviewsState.isSettled()) reviewsState.failed();
+  }, REVIEWS_TIMEOUT_MS);
+
   /* ---------- refund request form ---------- */
   (function () {
     var form = document.getElementById('refundForm');
@@ -289,7 +339,10 @@
   document.addEventListener('DOMContentLoaded', function () {
     var SUPABASE_URL = 'https://ywzgrdvupvmjonbxzavq.supabase.co';
     var SUPABASE_KEY = 'sb_publishable_98fnRyYsFRsi09tnUzqsBg__TZMTqek';
-    if (!window.supabase || !window.supabase.createClient) return;
+    if (!window.supabase || !window.supabase.createClient) {
+      reviewsState.failed();
+      return;
+    }
     var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     (function () {
@@ -325,7 +378,6 @@
     })();
 
     var listEl = document.getElementById('reviewsList');
-    var emptyEl = document.getElementById('reviewsEmpty');
     var form = document.getElementById('reviewForm');
     var starPicker = document.getElementById('starPicker');
     var starBtns = starPicker ? starPicker.querySelectorAll('.star-btn') : [];
@@ -382,7 +434,7 @@
     }
 
     function renderReview(row, prepend) {
-      if (emptyEl) { emptyEl.remove(); emptyEl = null; }
+      reviewsState.hide();
       var card = document.createElement('div');
       card.className = 'review-card';
 
@@ -445,19 +497,30 @@
 
     function loadReviews() {
       if (!listEl) return;
-      client.from('reviews').select('*').order('created_at', { ascending: false }).limit(50)
+      reviewsState.loading();
+
+      // Only approved reviews are readable (RLS), so this never leaks a
+      // pending submission into the public list.
+      var query = client.from('reviews').select('*')
+        .order('created_at', { ascending: false }).limit(50);
+
+      var timeout = new Promise(function (_, reject) {
+        setTimeout(function () { reject(new Error('timeout')); }, REVIEWS_TIMEOUT_MS);
+      });
+
+      Promise.race([query, timeout])
         .then(function (res) {
           if (res.error) throw res.error;
           var rows = res.data || [];
           if (!rows.length) {
-            if (emptyEl) emptyEl.textContent = T.reviewsEmpty;
+            reviewsState.empty();
             return;
           }
-          if (emptyEl) { emptyEl.remove(); emptyEl = null; }
+          reviewsState.hide();
           rows.forEach(function (row) { renderReview(row, false); });
         })
         .catch(function () {
-          if (emptyEl) emptyEl.textContent = T.reviewsFailed;
+          if (!reviewsState.isSettled()) reviewsState.failed();
         });
     }
     loadReviews();
@@ -490,21 +553,18 @@
         submitBtn.disabled = true;
         submitBtn.style.opacity = '.6';
 
+        // No .select() and no optimistic render: the row lands with
+        // is_approved = false and stays invisible until it is approved.
         client.from('reviews').insert({
           nickname: nickname.slice(0, 60),
           site_url: siteUrl ? siteUrl.slice(0, 200) : null,
           telegram: telegram ? telegram.slice(0, 60) : null,
           rating: currentRating,
           review_text: reviewText.slice(0, 600)
-        }).select().then(function (res) {
+        }).then(function (res) {
           submitBtn.disabled = false;
           submitBtn.style.opacity = '';
           if (res.error) throw res.error;
-          var row = (res.data && res.data[0]) || {
-            nickname: nickname, site_url: siteUrl, telegram: telegram,
-            rating: currentRating, review_text: reviewText, created_at: new Date().toISOString()
-          };
-          renderReview(row, true);
           form.reset();
           setStars(0);
           msgEl.textContent = T.reviewThanks;

@@ -178,6 +178,14 @@
     <p class="section-eyebrow">$ cat ./pricing.json</p>
     <h2>Послуги та ціни</h2>
     <div class="pricing-grid">
+      <div class="pricing-card is-starter reveal" style="animation-delay:.02s">
+        <p class="pricing-name">Перші клієнти</p>
+        <p class="pricing-desc">Лендінг або сайт-візитка за стартовою ціною. Умова: після здачі лишаєш відгук і дозволяєш показати роботу в портфоліо.</p>
+        <div class="pricing-price">
+          <span class="price-uah">від 2 000 грн</span>
+          <span class="price-usd">$45</span>
+        </div>
+      </div>
       <div class="pricing-card reveal" style="animation-delay:.05s">
         <p class="pricing-name">Лендінг / сайт-візитка</p>
         <p class="pricing-desc">Односторінковий сайт під ключ — дизайн, адаптивність, форма зв'язку.</p>
@@ -273,52 +281,7 @@
     <h2>Проєкти</h2>
 
     <div class="projects">
-      <a class="project reveal" style="animation-delay:.05s" href="https://slot-ok-beta.vercel.app/" target="_blank" rel="noopener">
-        <div class="project-preview" aria-hidden="true">
-          <svg viewBox="0 0 640 200" preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <linearGradient id="slotok-bg" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#241129"/>
-                <stop offset="100%" stop-color="#150b1e"/>
-              </linearGradient>
-              <radialGradient id="slotok-glow" cx="55%" cy="35%" r="65%">
-                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.35"/>
-                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
-              </radialGradient>
-            </defs>
-            <rect width="640" height="200" fill="url(#slotok-bg)"/>
-            <rect width="640" height="200" fill="url(#slotok-glow)"/>
-            <g transform="translate(88,28) scale(0.72)">
-              <circle cx="20" cy="18" r="4" fill="#5c5470"/>
-              <circle cx="34" cy="18" r="4" fill="#5c5470"/>
-              <circle cx="48" cy="18" r="4" fill="#5c5470"/>
-              <rect x="220" y="52" width="200" height="110" rx="14" fill="#0f0816" stroke="var(--accent)" stroke-width="2" stroke-opacity="0.5"/>
-              <rect x="238" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
-              <rect x="297" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
-              <rect x="356" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
-              <text x="261" y="115" font-size="30" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="var(--accent)">7</text>
-              <text x="320" y="115" font-size="26" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="#f0ede4">★</text>
-              <text x="379" y="115" font-size="30" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="var(--accent)">7</text>
-              <circle cx="470" cy="78" r="9" fill="var(--accent)"/>
-              <circle cx="490" cy="94" r="9" fill="var(--accent)" opacity="0.7"/>
-              <circle cx="463" cy="104" r="9" fill="var(--accent)" opacity="0.5"/>
-              <rect x="150" y="140" width="92" height="30" rx="10" fill="#2a1c38" opacity="0.85"/>
-              <circle cx="167" cy="155" r="3" fill="#8d9099"/>
-              <circle cx="180" cy="155" r="3" fill="#8d9099"/>
-              <circle cx="193" cy="155" r="3" fill="#8d9099"/>
-            </g>
-          </svg>
-        </div>
-        <div class="project-top">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span class="project-name">SlotOK</span>
-          <span class="project-arrow" aria-hidden="true">↗</span>
-        </div>
-        <p class="project-domain">slot-ok-beta.vercel.app</p>
-        <p class="project-desc">Соціальне демо-казино на віртуальній валюті — 30+ міні-ігор, банк, чат, VIP-система.</p>
-        <p class="project-result">Зроблено за 7 днів</p>
-      </a>
-
+      
       <a class="project reveal" style="animation-delay:.12s" href="https://ivan-site-nine.vercel.app/" target="_blank" rel="noopener">
         <div class="project-preview" aria-hidden="true">
           <svg viewBox="0 0 640 200" preserveAspectRatio="xMidYMid slice">
@@ -394,7 +357,8 @@
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
         <p class="project-domain">aurora-nine-beige.vercel.app</p>
-        <p class="project-desc">Багатосторінковий концепт-сайт приватних космічних подорожей — 5 сторінок, від напрямків до бронювання.</p>
+        <span class="project-tag">Концепт / демо-проєкт</span>
+        <p class="project-desc">Багатосторінковий сайт приватних космічних подорожей — 5 сторінок, від напрямків до бронювання.</p>
         <p class="project-result">Зроблено за 7 днів</p>
       </a>
 
@@ -434,6 +398,7 @@
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
         <p class="project-domain">shop-xi-one-17.vercel.app</p>
+        <span class="project-tag">Концепт / демо-проєкт</span>
         <p class="project-desc">Інтернет-магазин одягу — категорії, кошик, сторінки товарів і розпродаж.</p>
         <p class="project-result">Зроблено за 9 днів</p>
       </a>
@@ -471,8 +436,55 @@
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
         <p class="project-domain">lupa-coffe.vercel.app</p>
+        <span class="project-tag">Концепт / демо-проєкт</span>
         <p class="project-desc">Кав'ярня «Липа» в центрі Києва — меню, галерея, відгуки та онлайн-бронювання столика.</p>
         <p class="project-result">Зроблено за 8 днів</p>
+      </a>
+
+      <a class="project reveal" style="animation-delay:.38s" href="https://slot-ok-beta.vercel.app/" target="_blank" rel="noopener">
+        <div class="project-preview" aria-hidden="true">
+          <svg viewBox="0 0 640 200" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="slotok-bg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#241129"/>
+                <stop offset="100%" stop-color="#150b1e"/>
+              </linearGradient>
+              <radialGradient id="slotok-glow" cx="55%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="640" height="200" fill="url(#slotok-bg)"/>
+            <rect width="640" height="200" fill="url(#slotok-glow)"/>
+            <g transform="translate(88,28) scale(0.72)">
+              <circle cx="20" cy="18" r="4" fill="#5c5470"/>
+              <circle cx="34" cy="18" r="4" fill="#5c5470"/>
+              <circle cx="48" cy="18" r="4" fill="#5c5470"/>
+              <rect x="220" y="52" width="200" height="110" rx="14" fill="#0f0816" stroke="var(--accent)" stroke-width="2" stroke-opacity="0.5"/>
+              <rect x="238" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
+              <rect x="297" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
+              <rect x="356" y="69" width="46" height="76" rx="8" fill="#2a1c38"/>
+              <text x="261" y="115" font-size="30" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="var(--accent)">7</text>
+              <text x="320" y="115" font-size="26" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="#f0ede4">★</text>
+              <text x="379" y="115" font-size="30" font-family="'JetBrains Mono', monospace" text-anchor="middle" fill="var(--accent)">7</text>
+              <circle cx="470" cy="78" r="9" fill="var(--accent)"/>
+              <circle cx="490" cy="94" r="9" fill="var(--accent)" opacity="0.7"/>
+              <circle cx="463" cy="104" r="9" fill="var(--accent)" opacity="0.5"/>
+              <rect x="150" y="140" width="92" height="30" rx="10" fill="#2a1c38" opacity="0.85"/>
+              <circle cx="167" cy="155" r="3" fill="#8d9099"/>
+              <circle cx="180" cy="155" r="3" fill="#8d9099"/>
+              <circle cx="193" cy="155" r="3" fill="#8d9099"/>
+            </g>
+          </svg>
+        </div>
+        <div class="project-top">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="project-name">SlotOK</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+        <p class="project-domain">slot-ok-beta.vercel.app</p>
+        <p class="project-desc">Соціальна гра на віртуальній валюті, без реальних грошей.</p>
+        <p class="project-result">Зроблено за 7 днів</p>
       </a>
 
       <!--
@@ -504,12 +516,16 @@
     <h2>Відгуки</h2>
 
     <div class="reviews-list reveal" id="reviewsList">
-      <p class="reviews-empty" id="reviewsEmpty">Завантажую відгуки…</p>
+      <div class="reviews-state" id="reviewsState">
+        <p class="reviews-empty" id="reviewsEmpty">Поки що відгуків немає — будь першим!</p>
+        <button type="button" class="btn reviews-empty-cta" id="reviewsEmptyCta">Залишити відгук</button>
+      </div>
     </div>
 
     <details class="review-form-wrap reveal">
       <summary class="review-form-toggle">+ Залишити відгук</summary>
       <form class="review-form" id="reviewForm" novalidate>
+        <p class="review-form-hint">Відгук публікується після моєї перевірки — зазвичай протягом дня.</p>
         <div class="form-row">
           <label for="revNick">Нікнейм *</label>
           <input type="text" id="revNick" name="nickname" maxlength="60" required placeholder="Наприклад, Олег">
@@ -644,7 +660,6 @@
 
     <a class="contact-cta" data-cta="contact_telegram_cta" href="https://t.me/Theivankoo" target="_blank" rel="noopener">Написати в Telegram ↗</a>
     <p class="contact-note">Без зобов'язань — відповідаю протягом дня.</p>
-    <a class="contact-phone" href="tel:+380976875960">+380 97 687 59 60</a>
   </div>
 </div>
 
@@ -652,8 +667,6 @@
   <span>© 2026 Іван Колодєєв</span>
   <span aria-hidden="true">·</span>
   <a href="https://t.me/Theivankoo" target="_blank" rel="noopener">Telegram</a>
-  <span aria-hidden="true">·</span>
-  <a href="tel:+380976875960">+380 97 687 59 60</a>
 </footer>
 
 <a class="fab" data-cta="fab_telegram" href="https://t.me/Theivankoo" target="_blank" rel="noopener" aria-label="Написати в Telegram">
