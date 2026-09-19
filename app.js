@@ -3,6 +3,8 @@
 (function () {
   'use strict';
 
+  var REVIEW_ENDPOINT = 'https://ywzgrdvupvmjonbxzavq.supabase.co/functions/v1/review-submit';
+
   var STRINGS = {
     uk: {
       locale: 'uk-UA',
@@ -335,6 +337,96 @@
     }
   })();
 
+  /* ---------- review form ----------
+     Deliberately outside the Supabase block below: submitting goes through the
+     review-submit Edge Function, so the form keeps working even when the
+     Supabase bundle fails to load. */
+  (function () {
+    var form = document.getElementById('reviewForm');
+    var starPicker = document.getElementById('starPicker');
+    var starBtns = starPicker ? starPicker.querySelectorAll('.star-btn') : [];
+    var msgEl = document.getElementById('reviewFormMsg');
+    var submitBtn = document.getElementById('revSubmit');
+    var currentRating = 0;
+
+    function setStars(value) {
+      currentRating = value;
+      starBtns.forEach(function (btn) {
+        var v = parseInt(btn.getAttribute('data-value'), 10);
+        btn.classList.toggle('is-filled', v <= value);
+        btn.setAttribute('aria-checked', v === value ? 'true' : 'false');
+      });
+    }
+    starBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        setStars(parseInt(btn.getAttribute('data-value'), 10));
+      });
+    });
+
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        msgEl.textContent = '';
+        msgEl.className = 'review-form-msg';
+
+        var honeypot = form.querySelector('#revWebsite').value;
+        var nickname = form.querySelector('#revNick').value.trim();
+        var reviewText = form.querySelector('#revText').value.trim();
+        var siteUrl = form.querySelector('#revSite').value.trim();
+        var telegram = form.querySelector('#revTg').value.trim();
+
+        if (honeypot) {
+          form.reset();
+          setStars(0);
+          msgEl.textContent = T.reviewThanks;
+          msgEl.className = 'review-form-msg is-success';
+          return;
+        }
+        if (!nickname || !reviewText || currentRating < 1) {
+          msgEl.textContent = T.reviewIncomplete;
+          msgEl.className = 'review-form-msg is-error';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '.6';
+
+        // Submitted through the Edge Function rather than inserted directly:
+        // it rate-limits, stores the row unapproved and pushes it to Telegram
+        // with approve/reject buttons. Nothing is rendered here — the review
+        // only appears once it has been approved from that message.
+        fetch(REVIEW_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nickname: nickname, site_url: siteUrl, telegram: telegram,
+            rating: currentRating, review_text: reviewText,
+            lang: document.documentElement.lang === 'en' ? 'en' : 'uk',
+            website: honeypot
+          })
+        }).then(function (res) {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '';
+          if (res.status === 429) {
+            msgEl.textContent = T.rateLimited;
+            msgEl.className = 'review-form-msg is-error';
+            return;
+          }
+          if (!res.ok) throw new Error('bad_response');
+          form.reset();
+          setStars(0);
+          msgEl.textContent = T.reviewThanks;
+          msgEl.className = 'review-form-msg is-success';
+        }).catch(function () {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '';
+          msgEl.textContent = T.reviewFailed;
+          msgEl.className = 'review-form-msg is-error';
+        });
+      });
+    }
+  })();
+
   /* ---------- analytics + reviews (Supabase) ---------- */
   document.addEventListener('DOMContentLoaded', function () {
     var SUPABASE_URL = 'https://ywzgrdvupvmjonbxzavq.supabase.co';
@@ -378,26 +470,6 @@
     })();
 
     var listEl = document.getElementById('reviewsList');
-    var form = document.getElementById('reviewForm');
-    var starPicker = document.getElementById('starPicker');
-    var starBtns = starPicker ? starPicker.querySelectorAll('.star-btn') : [];
-    var msgEl = document.getElementById('reviewFormMsg');
-    var submitBtn = document.getElementById('revSubmit');
-    var currentRating = 0;
-
-    function setStars(value) {
-      currentRating = value;
-      starBtns.forEach(function (btn) {
-        var v = parseInt(btn.getAttribute('data-value'), 10);
-        btn.classList.toggle('is-filled', v <= value);
-        btn.setAttribute('aria-checked', v === value ? 'true' : 'false');
-      });
-    }
-    starBtns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        setStars(parseInt(btn.getAttribute('data-value'), 10));
-      });
-    });
 
     function starsMarkup(rating) {
       var wrap = document.createElement('span');
@@ -499,9 +571,11 @@
       if (!listEl) return;
       reviewsState.loading();
 
-      // Only approved reviews are readable (RLS), so this never leaks a
-      // pending submission into the public list.
-      var query = client.from('reviews').select('*')
+      // Only approved reviews are readable (RLS). The columns are listed
+      // explicitly because anon is not granted select on the moderation
+      // columns, which makes select('*') fail outright.
+      var query = client.from('reviews')
+        .select('id, nickname, site_url, telegram, rating, review_text, created_at')
         .order('created_at', { ascending: false }).limit(50);
 
       var timeout = new Promise(function (_, reject) {
@@ -524,58 +598,5 @@
         });
     }
     loadReviews();
-
-    if (form) {
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        msgEl.textContent = '';
-        msgEl.className = 'review-form-msg';
-
-        var honeypot = form.querySelector('#revWebsite').value;
-        var nickname = form.querySelector('#revNick').value.trim();
-        var reviewText = form.querySelector('#revText').value.trim();
-        var siteUrl = form.querySelector('#revSite').value.trim();
-        var telegram = form.querySelector('#revTg').value.trim();
-
-        if (honeypot) {
-          form.reset();
-          setStars(0);
-          msgEl.textContent = T.reviewThanks;
-          msgEl.className = 'review-form-msg is-success';
-          return;
-        }
-        if (!nickname || !reviewText || currentRating < 1) {
-          msgEl.textContent = T.reviewIncomplete;
-          msgEl.className = 'review-form-msg is-error';
-          return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.style.opacity = '.6';
-
-        // No .select() and no optimistic render: the row lands with
-        // is_approved = false and stays invisible until it is approved.
-        client.from('reviews').insert({
-          nickname: nickname.slice(0, 60),
-          site_url: siteUrl ? siteUrl.slice(0, 200) : null,
-          telegram: telegram ? telegram.slice(0, 60) : null,
-          rating: currentRating,
-          review_text: reviewText.slice(0, 600)
-        }).then(function (res) {
-          submitBtn.disabled = false;
-          submitBtn.style.opacity = '';
-          if (res.error) throw res.error;
-          form.reset();
-          setStars(0);
-          msgEl.textContent = T.reviewThanks;
-          msgEl.className = 'review-form-msg is-success';
-        }).catch(function () {
-          submitBtn.disabled = false;
-          submitBtn.style.opacity = '';
-          msgEl.textContent = T.reviewFailed;
-          msgEl.className = 'review-form-msg is-error';
-        });
-      });
-    }
   });
 })();
